@@ -1,10 +1,12 @@
 <template>
   <main class="h-screen w-full">
-    <!-- <slot name="header" /> -->
+    <navbar />
     <div class="page-wrapper">
-      <slot />
+      <div class="grow">
+        <NuxtPage />
+      </div>
+      <Slidebar />
     </div>
-    <!-- <slot name="footer" /> -->
   </main>
 </template>
 <style scoped>
@@ -19,6 +21,12 @@ main {
 
 .page-wrapper {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
+  display: flex;
+  gap: 28px;
+  padding: 0 24px;
+  padding-top: 40px;
+  align-items: start;
 }
 </style>

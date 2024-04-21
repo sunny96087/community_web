@@ -1,8 +1,12 @@
 <template>
-  <div class="bg-white">123</div>
+  <div>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
 </template>
-<script setup>
-const show = ref(false)
-
-const { count, increment } = useCounter()
+<script setup lang="ts">
+// definePageMeta({
+//   layout: 'default'
+// })
 </script>
