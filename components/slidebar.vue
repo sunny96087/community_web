@@ -10,13 +10,13 @@
       邊緣小杰
     </nuxtLink>
     <nuxtLink to="/trackingList" class="bar-item">
-      <div class="icon-bell">
+      <div class="icon-default">
         <Icon name="material-symbols:notifications-outline" size="26"></Icon>
       </div>
       追蹤名單
     </nuxtLink>
     <nuxtLink to="/likeArticleList" class="bar-item">
-      <div class="icon-like">
+      <div class="icon-default">
         <Icon name="material-symbols:thumb-up-outline" size="24"></Icon>
       </div>
       我按讚的文章
@@ -25,22 +25,28 @@
 </template>
 <style scoped>
 .btn-add{
-  @apply text-center py-4 font-bold border-2 border-black rounded-lg;
-  background-color: #EEC32A;
+  @apply text-center py-4 font-bold border-2 border-black rounded-lg text-white transform duration-200;
+  background-color: #03438D;
   box-shadow: -2px 2px 0px #000400;
+}
+
+.btn-add:hover{
+  background-color: #EEC32A;
 }
 
 .bar-item{
   @apply flex gap-4 items-center font-bold;
 }
 
-.icon-bell{
-  @apply w-[50px] h-[50px] flex justify-center items-center border-2 border-black rounded-full text-white;
+.icon-default{
+  @apply w-[50px] h-[50px] flex justify-center items-center border-2 border-black rounded-full transform duration-200;
+  background: #E2EDFA;
+}
+
+.bar-item:hover .icon-default{
+  @apply text-white;
   background: #03438D;
 }
 
-.icon-like{
-  @apply w-[50px] h-[50px] flex justify-center items-center border-2 border-black rounded-full;
-  background: #E2EDFA;
-}
+
 </style>

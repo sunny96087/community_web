@@ -17,3 +17,69 @@ body {
   vertical-align: top;
   object-fit: cover;
 }
+
+
+.custom-select {
+  @apply bg-white max-h-[52px];
+  padding: 12px 16px;
+  border: 2px solid #000;
+  display: flex;
+  justify-content: space-between;
+ }
+
+.custom-select-options{
+  @apply bg-white flex flex-col shadow-sm w-full absolute top-0;
+  border: 2px solid #000;
+
+}
+
+.custom-select-options .option{
+  @apply px-4 py-3;
+}
+.custom-select-options .option:hover{
+  background: #EFECE7;
+}
+
+.option.option-selected{
+  background: #EFECE7;
+}
+
+input:focus {
+  outline: none; /* 移除預設的輪廓 */
+  box-shadow: none; /* 移除預設的陰影效果 */
+  border-color: inherit; /* 保持邊框顏色不變 */
+ }
+
+ .custom-search-input{
+  @apply flex max-h-[52px] border-2 border-black bg-white;
+ }
+
+ .custom-search-input input{
+  @apply px-3 py-4 w-full;
+ }
+
+ .custom-search-input button{
+  @apply p-3 flex justify-center items-center text-white border-l-2 border-black transform duration-200;
+  background-color: #03438D;
+ }
+
+ .custom-search-input button:hover{
+  background-color: #EEC32A;
+ }
+
+ /* * 主要色 */
+ .text-primary{
+  color: #03438D;
+ }
+
+ .bg-primary{
+  background-color: #03438D;
+ }
+
+ .border-primary{
+  border-color: #03438D;
+ }
+
+.avatar{
+  @apply overflow-hidden rounded-full border-2 border-black;
+}

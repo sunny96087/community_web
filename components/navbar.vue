@@ -3,7 +3,7 @@
     <div class="relative m-auto flex max-w-[1200px] items-center justify-between px-6">
       <nuxtLink to="/" class="text-[26px] paytone-one-regular">MetaWall</nuxtLink>
       <div  @click="menu = !menu" class="flex gap-[10px] cursor-pointer">
-        <div class="avatar h-[30px] w-[30px] overflow-hidden rounded-full border-2 border-black">
+        <div class="avatar h-[30px] w-[30px]">
           <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
         </div>
         <div class="border-b-2 border-black leading-[28px] font-bold">Member</div>
@@ -34,6 +34,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 const menu = ref(false);
 </script>

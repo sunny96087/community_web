@@ -1,5 +1,5 @@
 <template>
-  <main class="h-screen w-full">
+  <main class="min-h-screen w-full">
     <navbar />
     <div class="page-wrapper">
       <div class="grow">
@@ -11,12 +11,10 @@
 </template>
 <style scoped>
 main {
-  background: url('~/assets/images/bg.png') no-repeat center center fixed;
-  /* -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover; */
-  background-size: cover;
-  font-family: 'Azeret Mono';
+ background: url('~/assets/images/bg.png') no-repeat center center;
+ background-size: cover;
+ background-attachment: fixed; 
+ font-family: 'Azeret Mono';
 }
 
 .page-wrapper {
@@ -25,8 +23,7 @@ main {
   margin: 0 auto;
   display: flex;
   gap: 28px;
-  padding: 0 24px;
-  padding-top: 40px;
+  padding: 40px 24px;
   align-items: start;
 }
 </style>
