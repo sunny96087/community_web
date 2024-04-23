@@ -101,8 +101,7 @@
 
       <!-- v-else no post -->
       <div
-        class="rounded-lg border-2 border-black bg-white"
-        style="box-shadow: 0px 3px 0px #000400"
+        class="rounded-lg border-2 border-black bg-white custom-b-shadow"
       >
         <div class="border-b-2 border-black">
           <div class="flex gap-[6px] p-5">
