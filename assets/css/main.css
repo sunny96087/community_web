@@ -110,6 +110,11 @@ input:focus {
   box-shadow: -2px 2px 0px #000400;
 }
 
+.custom-btn-disabled {
+  @apply flex transform items-center justify-center border-2 border-black p-3 duration-200 rounded-lg font-bold cursor-not-allowed bg-gray-400 text-gray-700;
+  box-shadow: -2px 2px 0px #000400;
+}
+
 .custom-btn-secondary:hover{
   opacity: 0.8;
 }
