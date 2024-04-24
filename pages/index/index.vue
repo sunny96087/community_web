@@ -123,8 +123,15 @@
       </div>
     </div>
   </div>
+  
 </template>
 <script setup lang="ts">
+import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
+// showToast('123test');
+// openDialog('注意', '確定要刪除嗎？')
+// showLoading()
+
+
 const currentPostType = ref(0)
 const postTypeOption = ['最新貼文', '熱門貼文', '追蹤貼文']
 
@@ -139,4 +146,5 @@ const selectOption = (index: number) => {
   dropdownVisible.value = false
   console.log(`currentPostType.value = ${currentPostType.value}`)
 }
+
 </script>

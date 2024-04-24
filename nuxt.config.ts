@@ -20,5 +20,6 @@ export default defineNuxtConfig({
       'stores'
     ]
   },
-  css: ['~/assets/css/main.css']
+  css: ['~/assets/css/main.css'],
+
 })

@@ -5,6 +5,9 @@
     <NuxtLayout>
       <Slidebar />
     </NuxtLayout> -->
+    <ToastTool />
+    <CustomDialog />
+    <LoadingTool />
   </div>
 </template>
 
