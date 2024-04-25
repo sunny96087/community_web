@@ -1,3 +1,5 @@
+<script setup></script>
+
 <template>
   <div class="">
     <!-- 追蹤名單 -->
@@ -14,25 +16,29 @@
     </div>
     <!-- tracking list -->
     <div class="flex flex-col gap-4">
-      <div class="custom-border-2 custom-b-shadow flex gap-4 rounded-lg bg-white p-4 list-item-block">
+      <div
+        class="custom-border-2 custom-b-shadow list-item-block flex gap-4 rounded-lg bg-white p-4"
+      >
         <div class="custom-avatar-clear h-[40px] w-[40px]">
           <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
         </div>
-        <div class="flex flex-col md:flex-row grow">
+        <div class="flex grow flex-col md:flex-row">
           <div class="flex grow flex-col">
-            <div class="font-bold list-item-name transform duration-200">愛爾敏</div>
+            <div class="list-item-name transform font-bold duration-200">愛爾敏</div>
             <div class="text-gray-400">追蹤時間：2022/1/10 12:00</div>
           </div>
           <div class="md:self-end">您已追蹤 90 天！</div>
         </div>
       </div>
-      <div class="custom-border-2 custom-b-shadow flex gap-4 rounded-lg bg-white p-4 list-item-block">
+      <div
+        class="custom-border-2 custom-b-shadow list-item-block flex gap-4 rounded-lg bg-white p-4"
+      >
         <div class="custom-avatar-clear h-[40px] w-[40px]">
           <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
         </div>
-        <div class="flex flex-col md:flex-row grow">
+        <div class="flex grow flex-col md:flex-row">
           <div class="flex grow flex-col">
-            <div class="font-bold list-item-name transform duration-200">愛爾敏</div>
+            <div class="list-item-name transform font-bold duration-200">愛爾敏</div>
             <div class="text-gray-400">追蹤時間：2022/1/10 12:00</div>
           </div>
           <div class="md:self-end">您已追蹤 90 天！</div>
@@ -41,10 +47,10 @@
     </div>
   </div>
 </template>
-<script setup></script>
+
 <style scoped>
-.list-item-block:hover .list-item-name{
-  color: #03438D;
+.list-item-block:hover .list-item-name {
+  color: #03438d;
   text-decoration: underline;
 }
 </style>

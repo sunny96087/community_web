@@ -1,3 +1,5 @@
+<script setup></script>
+
 <template>
   <div class="grow bg-white">
     <!-- 修改個人資料 -->
@@ -8,4 +10,3 @@
     <div class="">重設密碼</div>
   </div>
 </template>
-<script setup></script>

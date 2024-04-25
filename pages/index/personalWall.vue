@@ -1,3 +1,7 @@
+<script setup>
+
+</script>
+
 <template>
   <div class="bg-white grow">
     <!-- 個人牆 -->
@@ -6,6 +10,4 @@
     <div class="">個人牆 list</div>
   </div>
 </template>
-<script setup>
 
-</script>
