@@ -7,7 +7,7 @@
       </div>
       <div class="text-center">
         <div class="text-[60px] paytone-one-regular font-bold text-primary">MetaWall</div>
-        <div class="text-[24px] font-bold">到元宇宙展開全新社交圈</div>
+        <div class="text-[24px] font-bold">註冊</div>
         <input
           v-model="imageLink"
           type="text"
@@ -15,6 +15,15 @@
           placeholder="Email"
           
         />
+        <div class="mt-4 text-red-500">暱稱至少 2 個字元以上</div>
+        <input
+          v-model="imageLink"
+          type="text"
+          class="custom-input mt-9"
+          placeholder="Email"
+          
+        />
+        <div class="mt-4 text-red-500">帳號已被註冊，請替換新的 Email！</div>
         <input
           v-model="imageLink"
           type="Password"
@@ -22,10 +31,10 @@
           placeholder="Password"
           
         />
+        <div class="mt-4 text-red-500">密碼需至少 8 碼以上，並中英混合</div>
 
-        <div class="mt-4 text-red-500">帳號或密碼錯誤，請重新輸入！</div>
-        <button class="custom-btn-primary mt-8 w-full rounded-lg">登入</button>
-        <div class="mt-4">註冊帳號</div>
+        <button class="custom-btn-primary mt-8 w-full rounded-lg">註冊</button>
+        <div class="mt-4">我有帳號，前往登入</div>
       </div>
     </div>
   </div>
