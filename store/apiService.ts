@@ -25,6 +25,15 @@ export const APIStore = defineStore({
     }
   },
   actions: {
+    // 取得所有文章
+    async apiGetPost(data: JsonObject) {
+      try {
+        return await axios.get(`${this.api}posts?sort=${data.sort}&keyword=${data.keyword}`)
+      } catch (e) {
+        console.log(`apiGetPost error`, e)
+        return e
+      }
+    },
     // 新增單筆文章
     async apiAddPost(data: JsonObject) {
       try {
@@ -34,6 +43,25 @@ export const APIStore = defineStore({
         return e
       }
     },
+    // 新增單筆文章留言
+    async apiAddPostComment(data: JsonObject) {
+      try {
+        return await axios.post(`${this.api}posts/comments/${data.postId}`, data)
+      } catch (e) {
+        console.log(`apiAddPostComment error`, e)
+        return e
+      }
+    },
+    // 指定文章按讚
+    async apiLikePost(data: JsonObject) {
+      try {
+        return await axios.patch(`${this.api}posts/like/${data.postId}`, data)
+      } catch (e) {
+        console.log(`apiAddPostComment error`, e)
+        return e
+      }
+    },
+
     /** 
       async getRSAKey() {
         try {

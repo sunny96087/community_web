@@ -30,7 +30,7 @@ import { isLoading } from '~/store/eventBus'
  display: flex;
  justify-content: center;
  align-items: center;
- background-color: #eee3fe36;
+ background-color: #03438d36;
 }
 
 .text-primary {

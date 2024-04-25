@@ -24,7 +24,7 @@
           @blur="checkPostContent"
         ></textarea>
       </label>
-      <div v-if="postContentError" class="text-red-500 mt-1">{{ postContentError }}</div>
+      <div v-if="postContentError" class="mt-1 text-red-500">{{ postContentError }}</div>
 
       <label class="mt-4 block"
         >圖片連結
@@ -36,15 +36,21 @@
           @blur="checkImageLink"
         />
       </label>
-      <div v-if="imageLinkError" class="text-red-500 mt-1">{{ imageLinkError }}</div>
+      <div v-if="imageLinkError" class="mt-1 text-red-500">{{ imageLinkError }}</div>
 
       <div class="custom-border-2 mt-4 w-full rounded-lg" v-if="imageLink && imageLinkError === ''">
         <img :src="imageLink" alt="連結錯誤，無法預覽圖片" class="pic-auto" />
       </div>
 
       <div class="flex justify-center">
-        <button v-if="imageLink && postContent" @click="savePost" class="custom-btn-secondary mt-8 w-[60%]">送出貼文</button>
-        <button v-else class="custom-btn-disabled mt-8 w-[60%]" disabled >送出貼文</button>
+        <button
+          v-if="imageLink && postContent"
+          @click="savePost"
+          class="custom-btn-secondary mt-8 w-[60%]"
+        >
+          送出貼文
+        </button>
+        <button v-else class="custom-btn-disabled mt-8 w-[60%]" disabled>送出貼文</button>
       </div>
     </div>
 
@@ -54,29 +60,30 @@
 </template>
 <script setup lang="ts">
 import type { apiResponse } from '~/models'
+import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
 import { APIStore } from '~/store/apiService'
 const store = APIStore()
 const postContent = ref('')
 const imageLink = ref('')
 const userId = ref('6628b9f165bbf2c7e34ed7cb')
 
-const postContentError = ref('');
-const imageLinkError = ref('');
+const postContentError = ref('')
+const imageLinkError = ref('')
 
 function checkPostContent() {
- if (!postContent.value.trim()) {
-    postContentError.value = '貼文內容不得為空';
- } else {
-    postContentError.value = '';
- }
+  if (!postContent.value.trim()) {
+    postContentError.value = '貼文內容不得為空'
+  } else {
+    postContentError.value = ''
+  }
 }
 
 function checkImageLink() {
- if (!imageLink.value.startsWith('http')) {
-    imageLinkError.value = '圖片連結必須以 "http" 開頭';
- } else {
-    imageLinkError.value = '';
- }
+  if (!imageLink.value.startsWith('http')) {
+    imageLinkError.value = '圖片連結必須以 "http" 開頭'
+  } else {
+    imageLinkError.value = ''
+  }
 }
 
 async function savePost() {
@@ -90,25 +97,30 @@ async function savePost() {
 
   // 送出
   try {
+    showLoading()
     const res = (await store.apiAddPost(data)) as apiResponse
     const result = res.data
     console.log(`editEvent result = ${JSON.stringify(result)}`)
-    if(result.status === 'success') {
+    if (result.status === 'success') {
       console.log('新增貼文成功')
 
       // 清空頁面
-      reset();
+      reset()
 
       // 提示成功
+      showToast('新增貼文成功')
     } else {
       console.log('新增貼文失敗')
+      showToast('新增貼文失敗')
     }
   } catch (e) {
     console.log(e)
+  } finally {
+    hideLoading()
   }
 }
 
-function reset(){
+function reset() {
   postContent.value = ''
   imageLink.value = ''
 }

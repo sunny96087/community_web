@@ -1,5 +1,5 @@
 <template>
-  <div class="hidden px-6 py-8 w-[310px] bg-white border-2 border-black lg:flex lg:flex-col gap-6">
+  <div class="hidden px-6 py-8 min-w-[310px] bg-white border-2 border-black lg:flex lg:flex-col gap-6">
     <nuxtLink to="/addArticle" class="btn-add">
       張貼動態
     </nuxtLink>
