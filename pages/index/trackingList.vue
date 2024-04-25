@@ -3,7 +3,7 @@
 <template>
   <div class="">
     <!-- 追蹤名單 -->
-    <div class="relative mb-4 text-[20px]">
+    <div class="relative mb-4 text-[20px] font-bold">
       <div class="border-2 border-black bg-white py-[18px] text-center">追蹤名單</div>
       <div
         class="absolute inset-0 top-0 -translate-x-1 translate-y-1 transform border-2 border-black bg-white py-[18px] text-center"

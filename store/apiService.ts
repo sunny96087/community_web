@@ -28,7 +28,20 @@ export const APIStore = defineStore({
     // 取得所有文章
     async apiGetPost(data: JsonObject) {
       try {
-        return await axios.get(`${this.api}posts?sort=${data.sort}&keyword=${data.keyword}`)
+        return await axios.get(
+          `${this.api}posts?sort=${data.sort}&keyword=${data.keyword}&userId=${data.userId ? data.userId : ''}`
+        )
+      } catch (e) {
+        console.log(`apiGetPost error`, e)
+        return e
+      }
+    },
+    // 取得所有文章
+    async apiGetSpecifyUser(data: JsonObject) {
+      try {
+        return await axios.get(
+          `${this.api}users/${data.userId}`
+        )
       } catch (e) {
         console.log(`apiGetPost error`, e)
         return e
@@ -60,7 +73,7 @@ export const APIStore = defineStore({
         console.log(`apiAddPostComment error`, e)
         return e
       }
-    },
+    }
 
     /** 
       async getRSAKey() {

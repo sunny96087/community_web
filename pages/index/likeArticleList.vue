@@ -1,8 +1,8 @@
 <script setup></script>
 <template>
-  <div class="grow bg-white">
+  <div class="">
     <!-- 我按讚的貼文 -->
-    <div class="relative mb-4 text-[20px]">
+    <div class="relative mb-4 text-[20px] font-bold">
       <div class="border-2 border-black bg-white py-[18px] text-center">我按讚的貼文</div>
       <div
         class="absolute inset-0 top-0 -translate-x-1 translate-y-1 transform border-2 border-black bg-white py-[18px] text-center"
@@ -24,7 +24,7 @@
         <div class="flex grow flex-col md:flex-row">
           <div class="flex grow flex-col">
             <div class="list-item-name transform font-bold duration-200">愛爾敏</div>
-            <div class="text-gray-400">追蹤時間：2022/1/10 12:00</div>
+            <div class="text-gray-400">發文時間：2022/1/10 12:00</div>
           </div>
           <!-- <div class="md:self-end">您已追蹤 90 天！</div> -->
           <div class="flex gap-8 items-center self-end md:self-auto">

@@ -227,7 +227,7 @@ async function likePost(articleId: String) {
 
         <div class="my-5 flex gap-2">
           <div class="avatar h-[40px] w-[40px] min-w-[40px]">
-            <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
+            <img :src="defaultAvatar" alt="avatar" class="pic-auto" />
           </div>
 
           <div class="custom-search-input h-[40px] grow">
@@ -240,7 +240,7 @@ async function likePost(articleId: String) {
         <div class="flex flex-col gap-4" v-if="item.comments.length > 0">
           <div v-for="comment in item.comments" class="flex gap-3 rounded-xl bg-gray-50 p-4">
             <div class="avatar h-[40px] w-[40px] min-w-[40px]">
-              <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
+              <img :src="comment.userId?.avatar || defaultAvatar" alt="avatar" class="pic-auto" />
             </div>
             <div class="flex flex-col">
               <div class="">{{ comment.userId?.name || '查無此人' }}</div>
