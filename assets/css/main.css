@@ -103,6 +103,10 @@ input:focus {
   background-color: #03438d;
   box-shadow: -2px 2px 0px #000400;
 }
+.custom-btn-primary:hover {
+  background-color: #eec32a;
+  color: #000;
+}
 
 .custom-btn-secondary {
   @apply flex transform items-center justify-center border-2 border-black p-3 duration-200 rounded-lg font-bold;

@@ -32,6 +32,7 @@
 
 .btn-add:hover{
   background-color: #EEC32A;
+  color: #000;
 }
 
 .bar-item{
