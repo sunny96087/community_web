@@ -1,50 +1,177 @@
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   layout: false
 })
+
+import type { apiResponse } from '~/models'
+import { APIStore } from '~/store/apiService'
+const store = APIStore()
+
+import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
+
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const email = ref('')
+const password = ref('')
+
+async function login() {
+  if (email.value === '' || password.value === '') {
+    showToast('請輸入帳號密碼')
+    return
+  }
+
+  let data = {
+    email: email.value,
+    password: password.value
+  }
+
+  try {
+    showLoading()
+    const res = await store.apiLogin(data)
+    const result = res.data
+    console.log(`login result = ${JSON.stringify(result)}`)
+    if (result.statusCode === 200) {
+      store.saveUserDataToLocalStorage({
+        token: result.user.token,
+        id: result.user.id,
+        name: result.user.name,
+        googleId: result.user.googleId
+      })
+
+      router.push('/')
+
+      showToast('登入成功')
+    } else {
+      showToast('帳號或密碼錯誤，請重新輸入！')
+      // console.log(result.message);
+    }
+  } catch (e: any) {
+    // showToast('帳號或密碼錯誤，請重新輸入！')
+    console.log(e.response.data.message)
+    showToast(e.response.data.message)
+  } finally {
+    hideLoading()
+  }
+}
+
+/** 
+//  * Google 登入 第一版
+async function googleLogin() {
+  try {
+    showLoading()
+    const res = await store.apiGoogleLogin()
+    const result = res.data
+    console.log(`googleLogin result = ${JSON.stringify(result)}`)
+    if (result.statusCode === 200) {
+      store.saveUserDataToLocalStorage({
+        token: result.user.token,
+        id: result.user.id,
+        name: result.user.name,
+        googleId: result.user.googleId
+      })
+
+      router.push('/')
+      showToast('登入成功')
+    } else {
+      showToast('帳號或密碼錯誤，請重新輸入！')
+      // console.log(result.message);
+    }
+  } catch (e: any) {
+    showToast(e.response.data.message)
+  } finally {
+    hideLoading()
+  }
+}
+
+//  * Google 登入 第二版
+async function googleLogin() {
+  try {
+    showLoading()
+    // 將用戶重定向到後端的 Google 登入端點
+    const res = await store.apiGoogleLogin()
+    const result = res
+    console.log(`googleLogin result = ${JSON.stringify(result)}`)
+    if (result.statusCode === 200) {
+      store.saveUserDataToLocalStorage({
+        token: result.user.token,
+        id: result.user.id,
+        name: result.user.name,
+        googleId: result.user.googleId
+      })
+      if (result.data.user.url) {
+        location.href = result.data.user.url
+      }
+    }
+  } catch (e) {
+    showToast(e.response.data.message)
+    console.error(e)
+  } finally {
+    hideLoading()
+  }
+}
+
+const handleGoogleLogin = async () => {
+  try {
+    // 將用戶重定向到後端的 Google 登入端點
+    window.location.href = 'http://localhost:3666/users/google'
+  } catch (error) {
+    console.error('Error:', error)
+  }
+}
+*/
 </script>
 
 <template>
-  <div class="login min-h-screen w-full flex items-center justify-center">
-    <div class="max-w-[880px] w-full m-5 custom-border-2 px-[48px] py-[70px] flex flex-col md:grid md:grid-cols-2 gap-5 md:gap-12" style="box-shadow: -8px 8px 0px #00040029;background: #EFECE7;">
-      
-      <div class="w-[60%] m-auto md:w-full" >
-        <img src="~/assets/images/welcome.svg" alt="" class="pic-auto">
+  <div class="login flex min-h-screen w-full items-center justify-center">
+    <div
+      class="custom-border-2 m-5 flex w-full max-w-[880px] flex-col gap-5 px-[48px] py-[70px] md:grid md:grid-cols-2 md:gap-12"
+      style="box-shadow: -8px 8px 0px #00040029; background: #efece7"
+    >
+      <div class="m-auto w-[60%] md:w-full">
+        <img src="~/assets/images/welcome.svg" alt="" class="pic-auto" />
       </div>
       <div class="text-center">
-        <div class="text-[48px] md:text-[60px] paytone-one-regular font-bold text-primary">MetaWall</div>
-        <div class="text-[20px] md:text-[24px] font-bold">到元宇宙展開全新社交圈</div>
+        <div class="paytone-one-regular text-primary text-[48px] font-bold md:text-[60px]">
+          MetaWall
+        </div>
+        <div class="text-[20px] font-bold md:text-[24px]">到元宇宙展開全新社交圈</div>
+        <input v-model="email" type="text" class="custom-input mt-9" placeholder="Email" />
         <input
-          v-model="imageLink"
-          type="text"
-          class="custom-input mt-9"
-          placeholder="Email"
-          
-        />
-        <input
-          v-model="imageLink"
+          v-model="password"
           type="Password"
           class="custom-input mt-4"
           placeholder="Password"
-          
         />
 
-        <div class="mt-4 text-red-500">帳號或密碼錯誤，請重新輸入！</div>
-        <button class="custom-btn-disabled mt-8 w-full rounded-lg">登入</button>
-        <button class="custom-btn-primary mt-8 w-full rounded-lg">登入</button>
-        <NuxtLink to="/login/register" class="block mt-4">註冊帳號</NuxtLink>
+        <!-- <div class="mt-4 text-red-500">帳號或密碼錯誤，請重新輸入！</div> -->
+        <button
+          v-if="email && password"
+          @click="login"
+          class="custom-btn-primary mt-8 w-full rounded-lg"
+        >
+          登入
+        </button>
+        <button v-else class="custom-btn-disabled mt-8 w-full rounded-lg">登入</button>
+
+        <NuxtLink to="/login/register" class="mt-4 block">我沒有帳號，前往註冊</NuxtLink>
+
+        <!-- <hr class="mt-4 border-black" /> -->
+        <!-- google 登入 -->
+        <!-- <button @click="handleGoogleLogin" class="custom-btn-primary mt-4 w-full rounded-lg">
+          Google 登入
+        </button> -->
       </div>
     </div>
   </div>
+  <ToastTool />
 </template>
 
-
 <style scoped>
-
-.login{
- background: url('~/assets/images/bg.png') no-repeat center center;
- background-size: cover;
- background-attachment: fixed; 
- font-family: 'Azeret Mono';
+.login {
+  background: url('~/assets/images/bg.png') no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+  font-family: 'Azeret Mono';
 }
 </style>

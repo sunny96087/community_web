@@ -4,6 +4,8 @@ import { APIStore } from '~/store/apiService'
 const store = APIStore()
 import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
 
+
+
 const currentPostType = ref(0)
 const postTypeOption = ['最新貼文', '熱門貼文', '最舊貼文']
 const currentKeyword = ref('')

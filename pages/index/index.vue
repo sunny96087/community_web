@@ -48,7 +48,7 @@ async function loadData() {
     showLoading()
     const res = (await store.apiGetPost(data)) as apiResponse
     const result = res.data
-    console.log(`editEvent result = ${JSON.stringify(result)}`)
+    // console.log(`editEvent result = ${JSON.stringify(result)}`)
 
     if (result.status === 'success') {
       // 提示成功
@@ -56,7 +56,7 @@ async function loadData() {
 
       // 把資料放到 list
       postList.value = result.data
-      console.log(`postList = ${JSON.stringify(postList.value)}`)
+      // console.log(`postList = ${JSON.stringify(postList.value)}`)
       if (postList.value.length <= 0) {
         showToast('沒有相關文章，建議換個關鍵字查詢！')
       } else {

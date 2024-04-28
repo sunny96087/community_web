@@ -5,7 +5,7 @@
     <NuxtLayout>
       <Slidebar />
     </NuxtLayout> -->
-    <ToastTool />
+    <ToastTool class="z-50"/>
     <CustomDialog />
     <LoadingTool />
   </div>
