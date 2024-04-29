@@ -204,7 +204,8 @@ async function likePost(articleId: String) {
           <img :src="item.image" alt="pic" class="pic-auto" />
         </div>
 
-        <div class="mt-5">
+        <!-- 按讚 -->
+        <div class="mt-5" v-if="store.isLoggedIn">
           <div class="flex items-center gap-2" v-if="item.likes > 0">
             <Icon
               @click="likePost(item._id)"
@@ -225,7 +226,19 @@ async function likePost(articleId: String) {
           </div>
         </div>
 
-        <div class="my-5 flex gap-2">
+        <div class="mt-5" v-else>
+          <div class="flex items-center gap-2" v-if="item.likes > 0">
+            <Icon
+              name="material-symbols:thumb-up-outline"
+              size="24"
+              class="text-primary"
+            ></Icon>
+            {{ item.likes }}
+          </div>
+        </div>
+
+        <!-- 留言 -->
+        <div class="my-5 flex gap-2" v-if="store.isLoggedIn">
           <div class="avatar h-[40px] w-[40px] min-w-[40px]">
             <img :src="defaultAvatar" alt="avatar" class="pic-auto" />
           </div>
@@ -236,8 +249,13 @@ async function likePost(articleId: String) {
           </div>
         </div>
 
+        <div class="mt-2 text-[14px]" v-else>
+          一起來討論吧 👉
+          <NuxtLink to="/login" class="text-primary">登入</NuxtLink>
+        </div>
+
         <!-- 留言列表 -->
-        <div class="flex flex-col gap-4" v-if="item.comments.length > 0">
+        <div class="flex flex-col gap-4" v-if="item.comments.length > 0 && store.isLoggedIn">
           <div v-for="comment in item.comments" class="flex gap-3 rounded-xl bg-gray-50 p-4">
             <div class="avatar h-[40px] w-[40px] min-w-[40px]">
               <img :src="comment.userId?.avatar || defaultAvatar" alt="avatar" class="pic-auto" />

@@ -2,25 +2,27 @@ import type { JsonObject } from 'type-fest'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
-const obj: JsonObject = {
-  name: 'John',
-  age: 30
-}
+// const obj: JsonObject = {
+//   name: 'John',
+//   age: 30
+// }
 
 export const APIStore = defineStore({
   id: 'api-store',
   state: () => {
     return {
       // 開發
-      // api: 'http://localhost:3666/'
+      api: 'http://localhost:3666/',
 
       // 線上
-      api: "https://express-community.onrender.com/",
+      // api: "https://express-community.onrender.com/",
 
       //   userInfo: null as JsonObject | null,
       //   tokenInfo: {
       //     token: '',
       //   }
+      userInfo: null as any | null, // 用戶資料，初始為 null
+      isLoggedIn: false, // 登入狀態
     }
   },
   actions: {
@@ -35,12 +37,12 @@ export const APIStore = defineStore({
         return e
       }
     },
-    // ? 取得所有文章
+    // ? 
     async apiGetSpecifyUser(data: JsonObject) {
       try {
         return await axios.get(`${this.api}users/${data.userId}`)
       } catch (e) {
-        console.log(`apiGetPost error`, e)
+        console.log(`apiGetSpecifyUser error`, e)
         return e
       }
     },
@@ -76,7 +78,16 @@ export const APIStore = defineStore({
       try {
         return await axios.post(`${this.api}users/sign_up`, data)
       } catch (e) {
-        console.log(`register error`, e)
+        console.log(`apiRegister error`, e)
+        return e
+      }
+    },
+    // 驗證 email 是否重複
+    async apiCheckEmail(data: JsonObject) {      
+      try {
+        return await axios.get(`${this.api}users/checkEmail/${data.email}`)
+      } catch (e) {
+        console.log(`apiCheckEmail error`, e)
         return e
       }
     },
@@ -108,6 +119,8 @@ export const APIStore = defineStore({
 
       // 存儲 userInfo 至 localStorage
       localStorage.setItem('userInfo', userInfo)
+      // this.userInfo = userInfo;
+      // this.isLoggedIn = userInfo !== null;
     },
     // 取使用者 token
     getToken() {
@@ -125,7 +138,13 @@ export const APIStore = defineStore({
     logout() {
       // 直接移除名為 'userInfo' 的項目
       localStorage.removeItem('userInfo')
-    }
+      this.userInfo = null
+      this.isLoggedIn = false
+    },
+    setUserInfo(userInfo: any | null) {
+      this.userInfo = userInfo;
+      this.isLoggedIn = userInfo !== null;
+    },
 
 
 

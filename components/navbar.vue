@@ -7,26 +7,24 @@ const router = useRouter()
 
 const menu = ref(false)
 
-const isLoggedIn = ref(false)
+// const isLoggedIn = ref(false)
 
 function logout() {
   store.logout()
-  isLoggedIn.value = false
   router.push('/login')
 }
-
-// function getUserInfo() {
-//   let user = store.getUserLocalInfo()
-//   console.log(user);
-// }
 
 // getUserInfo()
 onMounted(() => {
   const userInfo = store.getUserInfoFromLocalStorage()
   console.log(userInfo)
-  isLoggedIn.value = userInfo !== null // 根據用戶數據更新登入狀態
   // 登入會有資料
   // 沒登入 = null
+
+  if(userInfo){
+    store.setUserInfo(userInfo)
+  }
+  
 })
 </script>
 
@@ -35,7 +33,7 @@ onMounted(() => {
     <div class="relative m-auto flex max-w-[1200px] items-center justify-between px-6">
       <nuxtLink to="/" class="paytone-one-regular text-[26px]">MetaWall</nuxtLink>
 
-      <div v-if="isLoggedIn" @click="menu = !menu" class="flex cursor-pointer gap-[10px]">
+      <div v-if="store.isLoggedIn" @click="menu = !menu" class="flex cursor-pointer gap-[10px]">
         <div class="avatar h-[30px] w-[30px]">
           <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
         </div>

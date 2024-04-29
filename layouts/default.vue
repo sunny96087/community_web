@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { APIStore } from '~/store/apiService'
+const store = APIStore()
+
+</script>
+
 <template>
   <main class="min-h-screen w-full">
     <navbar />
@@ -5,7 +11,7 @@
       <div class="grow">
         <NuxtPage />
       </div>
-      <Slidebar />
+      <Slidebar v-if="store.isLoggedIn"/>
     </div>
   </main>
 </template>
