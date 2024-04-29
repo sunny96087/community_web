@@ -191,7 +191,7 @@ async function likePost(articleId: String) {
         <div class="flex grow flex-col sm:flex-row">
           <div class="flex grow flex-col items-start">
             <div class="">{{ userData.name }}</div>
-            <div class="">{{ userData.following.length || 0 }} 人追蹤</div>
+            <div class="">{{ userData.following?.length || 0 }} 人追蹤</div>
           </div>
           <div class="mr-4 flex w-full max-w-[96px] items-center">
             <button class="custom-btn-secondary max-h-[36px] w-full">追蹤</button>
@@ -230,7 +230,7 @@ async function likePost(articleId: String) {
     </div>
 
     <!-- post list -->
-    <div class="mt-4 flex flex-col gap-3" v-if="postList.length > 0">
+    <div class="mt-4 flex flex-col gap-3" v-if="postList?.length > 0">
       <!-- post -->
       <div
         v-for="item in postList"
@@ -291,7 +291,7 @@ async function likePost(articleId: String) {
         </div>
 
         <!-- 留言列表 -->
-        <div class="flex flex-col gap-4" v-if="item.comments.length > 0">
+        <div class="flex flex-col gap-4" v-if="item.comments?.length > 0">
           <div v-for="comment in item.comments" class="flex gap-3 rounded-xl bg-gray-50 p-4">
             <div class="avatar h-[40px] w-[40px] min-w-[40px]">
               <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />

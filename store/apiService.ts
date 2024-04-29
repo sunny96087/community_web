@@ -12,10 +12,10 @@ export const APIStore = defineStore({
   state: () => {
     return {
       // 開發
-      api: 'http://localhost:3666/'
+      // api: 'http://localhost:3666/'
 
       // 線上
-      // api: "https://express-community.onrender.com/",
+      api: "https://express-community.onrender.com/",
 
       //   userInfo: null as JsonObject | null,
       //   tokenInfo: {
@@ -126,6 +126,9 @@ export const APIStore = defineStore({
       // 直接移除名為 'userInfo' 的項目
       localStorage.removeItem('userInfo')
     }
+
+
+
 
     /** 
       async getRSAKey() {

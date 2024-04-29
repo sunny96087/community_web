@@ -84,7 +84,20 @@ async function googleLogin() {
   }
 }
 
+
+// 這個重定向過去，會轉址到後端的 Google 登入端點，會成功但回不來前端
+const handleGoogleLogin = async () => {
+  try {
+    // 將用戶重定向到後端的 Google 登入端點
+    window.location.href = 'http://localhost:3666/users/google'
+  } catch (error) {
+    console.error('Error:', error)
+  }
+}
+
+
 //  * Google 登入 第二版
+// Google 登入頁面直接出不來
 async function googleLogin() {
   try {
     showLoading()
@@ -103,20 +116,11 @@ async function googleLogin() {
         location.href = result.data.user.url
       }
     }
-  } catch (e) {
-    showToast(e.response.data.message)
+  } catch (e: any) {
+    // showToast(e.response.data.message)
     console.error(e)
   } finally {
     hideLoading()
-  }
-}
-
-const handleGoogleLogin = async () => {
-  try {
-    // 將用戶重定向到後端的 Google 登入端點
-    window.location.href = 'http://localhost:3666/users/google'
-  } catch (error) {
-    console.error('Error:', error)
   }
 }
 */
@@ -161,6 +165,9 @@ const handleGoogleLogin = async () => {
         <!-- <button @click="handleGoogleLogin" class="custom-btn-primary mt-4 w-full rounded-lg">
           Google 登入
         </button> -->
+        <!-- <a class="m-btn register-btn" href="#" @click.prevent="handleGoogleLogin" target="_blank">
+          Google帳號登入
+        </a> -->
       </div>
     </div>
   </div>
