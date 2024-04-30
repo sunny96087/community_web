@@ -36,7 +36,8 @@ async function login() {
         token: result.user.token,
         id: result.user.id,
         name: result.user.name,
-        googleId: result.user.googleId
+        googleId: result.user.googleId,
+        avatar: result.user.avatar
       })
 
       router.push('/')

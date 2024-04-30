@@ -22,7 +22,7 @@ export const APIStore = defineStore({
       //     token: '',
       //   }
       userInfo: null as any | null, // 用戶資料，初始為 null
-      isLoggedIn: false, // 登入狀態
+      isLoggedIn: false // 登入狀態
     }
   },
   actions: {
@@ -37,7 +37,7 @@ export const APIStore = defineStore({
         return e
       }
     },
-    // ? 
+    // 取得單筆使用者資料 自己
     async apiGetSpecifyUser(data: JsonObject) {
       try {
         return await axios.get(`${this.api}users/${data.userId}`)
@@ -46,14 +46,61 @@ export const APIStore = defineStore({
         return e
       }
     },
+    // 取得單筆使用者資料 公開
+    async apiGetSpecifyOpenUser(data: JsonObject) {
+      try {
+        console.log(data);
+        
+        return await axios.get(`${this.api}users/userOneOpen/${data.id}`)
+      } catch (e) {
+        console.log(`apiGetSpecifyUser error`, e)
+        return e
+      }
+    },
     // 新增單筆文章
     async apiAddPost(data: JsonObject) {
       try {
-        return await axios.post(`${this.api}posts`, data)
+        const user = await this.userInfo.token
+        console.log(`token = ${user}`)
+        return await axios.post(`${this.api}posts`, data, {
+          headers: {
+            token: user
+          }
+        })
       } catch (e) {
         console.log(`apiAddPost error`, e)
         return e
       }
+    },
+    // 取得使用者蹤清單 自己
+    async apiGetUserFollowList() {
+      try {
+        const user = await this.userInfo.token
+        console.log(`token = ${user}`)
+        return await axios.get(`${this.api}users/followList`, {
+          headers: {
+            token: user
+          }
+        })
+      } catch (e) {
+        console.log(`apiGetUserFollowList error`, e)
+        return e
+      }
+    },
+    // 上傳單張圖片
+    async apiUploadImage(data: JsonObject) {
+      // const user = await this.userInfo.token
+      // console.log(`token = ${user}`)
+      return await axios.post(`${this.api}upload/image`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      // try {
+      // } catch (e) {
+      //   console.log(`apiAddPost error`, e)
+      //   return e
+      // }
     },
     // 新增單筆文章留言
     async apiAddPostComment(data: JsonObject) {
@@ -83,7 +130,7 @@ export const APIStore = defineStore({
       }
     },
     // 驗證 email 是否重複
-    async apiCheckEmail(data: JsonObject) {      
+    async apiCheckEmail(data: JsonObject) {
       try {
         return await axios.get(`${this.api}users/checkEmail/${data.email}`)
       } catch (e) {
@@ -111,6 +158,7 @@ export const APIStore = defineStore({
       id: string
       name: string
       googleId: string
+      avatar: string
     }) {
       // 將資料轉化為 JSON 字符串
       const userInfo = JSON.stringify(data)
@@ -142,12 +190,9 @@ export const APIStore = defineStore({
       this.isLoggedIn = false
     },
     setUserInfo(userInfo: any | null) {
-      this.userInfo = userInfo;
-      this.isLoggedIn = userInfo !== null;
-    },
-
-
-
+      this.userInfo = userInfo
+      this.isLoggedIn = userInfo !== null
+    }
 
     /** 
       async getRSAKey() {

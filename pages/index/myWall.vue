@@ -9,13 +9,13 @@ import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBu
 const currentPostType = ref(0)
 const postTypeOption = ['最新貼文', '熱門貼文', '最舊貼文']
 const currentKeyword = ref('')
-const currentUser = ref('6628b9f165bbf2c7e34ed7cb')
+// const currentUser = ref('6628b9f165bbf2c7e34ed7cb')
 
 const dropdownVisible = ref(false)
 
 // 創建一個响應式屬性來存儲 postList
 const postList: any = ref([])
-import defaultAvatar from '~/assets/images/userPic.jpg'
+import defaultAvatar from '~/assets/images/userPic.png'
 
 // 創建一個响應式屬性來存儲留言內容
 const commentContent = ref('')
@@ -45,7 +45,7 @@ async function loadPostData() {
   let data = {
     sort: currentSort,
     keyword: currentKeyword.value,
-    userId: currentUser.value
+    userId: store.userInfo.id,
   }
   console.log(data)
 
@@ -53,7 +53,7 @@ async function loadPostData() {
     showLoading()
     const res = (await store.apiGetPost(data)) as apiResponse
     const result = res.data
-    console.log(`editEvent result = ${JSON.stringify(result)}`)
+    // console.log(`editEvent result = ${JSON.stringify(result)}`)
 
     if (result.status === 'success') {
       // 提示成功
@@ -61,9 +61,9 @@ async function loadPostData() {
 
       // 把資料放到 list
       postList.value = result.data
-      console.log(`postList = ${JSON.stringify(postList.value)}`)
+      // console.log(`postList = ${JSON.stringify(postList.value)}`)
       if (postList.value.length <= 0) {
-        showToast('沒有相關文章，建議換個關鍵字查詢！')
+        showToast('沒有相關文章')
       } else {
         // showToast('取得貼文成功')
       }
@@ -91,7 +91,7 @@ const submitComment = async (articleId: String) => {
   let data: any = {
     content: commentContent.value,
     postId: articleId,
-    userId: '6628b9f165bbf2c7e34ed7cb'
+    userId: store.userInfo.id
   }
 
   try {
@@ -121,7 +121,7 @@ const submitComment = async (articleId: String) => {
 async function likePost(articleId: String) {
   let data: any = {
     postId: articleId,
-    userId: '6628b9f165bbf2c7e34ed7cb'
+    userId: store.userInfo.id
   }
 
   try {
@@ -230,7 +230,7 @@ async function likePost(articleId: String) {
 
         <div class="my-5 flex gap-2">
           <div class="avatar h-[40px] w-[40px] min-w-[40px]">
-            <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
+            <img :src="item.userId?.avatar || defaultAvatar" alt="avatar" class="pic-auto" />
           </div>
 
           <div class="custom-search-input h-[40px] grow">
@@ -243,7 +243,7 @@ async function likePost(articleId: String) {
         <div class="flex flex-col gap-4" v-if="item.comments.length > 0">
           <div v-for="comment in item.comments" class="flex gap-3 rounded-xl bg-gray-50 p-4">
             <div class="avatar h-[40px] w-[40px] min-w-[40px]">
-              <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
+              <img :src="item.userId?.avatar || defaultAvatar" alt="avatar" class="pic-auto" />
             </div>
             <div class="flex flex-col">
               <div class="">{{ comment.userId?.name || '查無此人' }}</div>

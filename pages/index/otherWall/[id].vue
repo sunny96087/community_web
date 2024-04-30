@@ -7,13 +7,20 @@ import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBu
 const currentPostType = ref(0)
 const postTypeOption = ['最新貼文', '熱門貼文', '最舊貼文']
 const currentKeyword = ref('')
-const currentUser = ref('6628b9f165bbf2c7e34ed7cb')
+// const currentUser = ref('6628b9f165bbf2c7e34ed7cb')
+
+// 測試
+// http://localhost:3000/otherWall/66228e953bdf99c35c96e459
+
+// 從路由取得使用者 id 參數
+const route = useRoute()
+// const currentUser = route.params
 
 const dropdownVisible = ref(false)
 
 // 創建一個响應式屬性來存儲 postList
 const postList: any = ref([])
-import defaultAvatar from '~/assets/images/userPic.jpg'
+import defaultAvatar from '~/assets/images/userPic.png'
 
 const userData: any = ref([])
 
@@ -34,13 +41,13 @@ const selectOption = (index: number) => {
 }
 
 async function loadUserData() {
-  let data = {
-    userId: currentUser.value
-  }
+  let data = route.params
 
   try {
     showLoading()
-    const res = (await store.apiGetSpecifyUser(data)) as apiResponse
+    console.log(`data = ${JSON.stringify(data)}`);
+    
+    const res = (await store.apiGetSpecifyOpenUser(data)) as apiResponse
     const result = res.data
     console.log(`editEvent result = ${JSON.stringify(result)}`)
     if (result.status === 'success') {
@@ -69,7 +76,7 @@ async function loadPostData() {
   let data = {
     sort: currentSort,
     keyword: currentKeyword.value,
-    userId: currentUser.value
+    userId: route.params
   }
   console.log(data)
 
@@ -77,7 +84,7 @@ async function loadPostData() {
     showLoading()
     const res = (await store.apiGetPost(data)) as apiResponse
     const result = res.data
-    console.log(`editEvent result = ${JSON.stringify(result)}`)
+    // console.log(`editEvent result = ${JSON.stringify(result)}`)
 
     if (result.status === 'success') {
       // 提示成功
@@ -85,7 +92,7 @@ async function loadPostData() {
 
       // 把資料放到 list
       postList.value = result.data
-      console.log(`postList = ${JSON.stringify(postList.value)}`)
+      // console.log(`postList = ${JSON.stringify(postList.value)}`)
       if (postList.value.length <= 0) {
         showToast('沒有相關文章，建議換個關鍵字查詢！')
       } else {
@@ -115,7 +122,7 @@ const submitComment = async (articleId: String) => {
   let data: any = {
     content: commentContent.value,
     postId: articleId,
-    userId: '6628b9f165bbf2c7e34ed7cb'
+    userId: store.userInfo.id
   }
 
   try {
@@ -145,7 +152,7 @@ const submitComment = async (articleId: String) => {
 async function likePost(articleId: String) {
   let data: any = {
     postId: articleId,
-    userId: '6628b9f165bbf2c7e34ed7cb'
+    userId: store.userInfo.id
   }
 
   try {
@@ -186,7 +193,7 @@ async function likePost(articleId: String) {
         class="absolute inset-0 flex items-center gap-4 overflow-hidden rounded-lg border-2 border-black bg-white text-center"
       >
         <div class="h-[100px] w-[100px] border-r-2 border-black">
-          <img :src="userData.avatar" alt="userData_avatar" class="pic-auto" />
+          <img :src="userData.avatar || defaultAvatar" alt="userData_avatar" class="pic-auto" />
         </div>
         <div class="flex grow flex-col sm:flex-row">
           <div class="flex grow flex-col items-start">

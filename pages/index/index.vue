@@ -13,7 +13,7 @@ const dropdownVisible = ref(false)
 
 // 創建一個响應式屬性來存儲 postList
 const postList: any = ref([])
-import defaultAvatar from '~/assets/images/userPic.jpg'
+import defaultAvatar from '~/assets/images/userPic.png'
 
 // 創建一個响應式屬性來存儲留言內容
 const commentContent = ref('')
@@ -88,7 +88,7 @@ const submitComment = async (articleId: String) => {
   let data = {
     content: commentContent.value,
     postId: articleId,
-    userId: '6628b9f165bbf2c7e34ed7cb'
+    userId: store.userInfo.id,
   }
 
   try {
@@ -118,7 +118,7 @@ const submitComment = async (articleId: String) => {
 async function likePost(articleId: String) {
   let data = {
     postId: articleId,
-    userId: '6628b9f165bbf2c7e34ed7cb'
+    userId: store.userInfo.id
   }
 
   try {
@@ -240,7 +240,7 @@ async function likePost(articleId: String) {
         <!-- 留言 -->
         <div class="my-5 flex gap-2" v-if="store.isLoggedIn">
           <div class="avatar h-[40px] w-[40px] min-w-[40px]">
-            <img :src="defaultAvatar" alt="avatar" class="pic-auto" />
+            <img :src="store.userInfo?.avatar || defaultAvatar" alt="avatar" class="pic-auto" />
           </div>
 
           <div class="custom-search-input h-[40px] grow">

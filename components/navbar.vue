@@ -4,6 +4,7 @@ import { APIStore } from '~/store/apiService'
 const store = APIStore()
 import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
 const router = useRouter()
+import defaultAvatar from '~/assets/images/userPic.png'
 
 const menu = ref(false)
 
@@ -35,7 +36,7 @@ onMounted(() => {
 
       <div v-if="store.isLoggedIn" @click="menu = !menu" class="flex cursor-pointer gap-[10px]">
         <div class="avatar h-[30px] w-[30px]">
-          <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
+          <img :src="store.userInfo?.avatar || defaultAvatar" alt="avatar" class="pic-auto" />
         </div>
 
         <div class="border-b-2 border-black font-bold leading-[28px]">Member</div>

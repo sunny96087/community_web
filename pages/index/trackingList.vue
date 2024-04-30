@@ -1,4 +1,34 @@
-<script setup></script>
+<script setup lang="ts">
+// apiGetUserFollowList
+import defaultAvatar from '~/assets/images/userPic.png'
+import { APIStore } from '~/store/apiService'
+const store = APIStore()
+import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
+
+const list = ref({})
+
+getUserFollowList()
+
+async function getUserFollowList() {
+  try {
+    showLoading()
+    const res = await store.apiGetUserFollowList()
+    const result = result.data
+    console.log(`getUserFollowList result = ${JSON.stringify(result)}`)
+    if (result.statusCode == 200) {
+      console.log('取得追蹤名單成功')
+      lest.value = result.data.following
+      console.log(`list = ${JSON.stringify(list.value)}`)
+    } else {
+      console.log('取得追蹤名單失敗')
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoading()
+  }
+}
+</script>
 
 <template>
   <div class="">
@@ -14,8 +44,8 @@
         追蹤名單
       </div>
     </div>
-    <!-- tracking list -->
-    <div class="flex flex-col gap-4">
+    <!-- todo 還沒放進去 tracking list -->
+    <div class="flex flex-col gap-4" v-if="list.length > 0">
       <div
         class="custom-border-2 custom-b-shadow list-item-block flex gap-4 rounded-lg bg-white p-4"
       >
@@ -43,6 +73,15 @@
           </div>
           <div class="md:self-end">您已追蹤 90 天！</div>
         </div>
+      </div>
+    </div>
+
+    <!-- tracking list none -->
+    <div class="flex flex-col gap-4" v-else>
+      <div
+        class="custom-border-2 custom-b-shadow list-item-block flex gap-4 rounded-lg bg-white p-4 justify-center text-gray-400"
+      >
+      目前沒有追蹤！
       </div>
     </div>
   </div>
