@@ -10,6 +10,8 @@ const menu = ref(false)
 
 // const isLoggedIn = ref(false)
 
+// BUG 使用者資料更新後沒辦法即時更新
+
 function logout() {
   store.logout()
   router.push('/login')

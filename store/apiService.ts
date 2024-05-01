@@ -38,13 +38,14 @@ export const APIStore = defineStore({
       }
     },
     // 取得單筆使用者資料 自己
-    async apiGetSpecifyUser(data: JsonObject) {
-      try {
-        return await axios.get(`${this.api}users/${data.userId}`)
-      } catch (e) {
-        console.log(`apiGetSpecifyUser error`, e)
-        return e
-      }
+    async apiGetSpecifyUser() {
+      const user = await this.getToken()
+      console.log(`token = ${user}`)
+      return await axios.get(`${this.api}users/userOne`, {
+        headers: {
+          token: user
+        }
+      })
     },
     // 取得單筆使用者資料 公開
     async apiGetSpecifyOpenUser(data: JsonObject) {
@@ -60,6 +61,31 @@ export const APIStore = defineStore({
     // 取得使用者按讚文章資料
     async apiGetUserLikePost(data: JsonObject) {
       return await axios.get(`${this.api}users/likedPosts/${data}`)
+    },
+    // 修改使用者資料 自己
+    async apiUpdateUser(data: JsonObject) {
+      const user = await this.userInfo.token
+      console.log(`token = ${user}`)
+      return await axios.patch(`${this.api}users/`, data, {
+        headers: {
+          token: user
+        }
+      })
+      // try {
+      // } catch (e) {
+      //   console.log(`apiUpdateUser error`, e)
+      //   return e
+      // }
+    },
+    // 重設密碼
+    async apiUpdatePassword(data: JsonObject) {
+      const user = await this.userInfo.token
+      console.log(`token = ${user}`)
+      return await axios.post(`${this.api}users/updatePassword`, data, {
+        headers: {
+          token: user
+        }
+      })
     },
     // 新增單筆文章
     async apiAddPost(data: JsonObject) {
@@ -125,18 +151,14 @@ export const APIStore = defineStore({
       }
     },
     // 追蹤
-    async apiFollowUser(data: JsonObject) {
+    async apiFollowUser() {
       const user = await this.userInfo.token
       console.log(`token = ${user}`)
-      return await axios.patch(
-        `${this.api}users/follow/${data.userId}`,
-        {},
-        {
-          headers: {
-            token: user
-          }
+      return await axios.patch(`${this.api}users/follow/${data.userId}`, {
+        headers: {
+          token: user
         }
-      )
+      })
     },
     // 註冊
     async apiRegister(data: JsonObject) {
@@ -190,7 +212,13 @@ export const APIStore = defineStore({
     },
     // 取使用者 token
     getToken() {
-      return localStorage.getItem('token')
+      // 從 localStorage 中取得 userInfo 字符串
+      const userInfoString = localStorage.getItem('userInfo')
+      // 將字符串反序列化為 JavaScript 對象
+      const userInfo = userInfoString ? JSON.parse(userInfoString) : null
+      // 從 userInfo 對象中提取 token
+      const token = userInfo ? userInfo.token : null
+      return token
     },
     getUserInfoFromLocalStorage() {
       // 從 localStorage 取出 userInfo 字符串

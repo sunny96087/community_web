@@ -55,10 +55,11 @@ async function likePost(articleId: String) {
 
       // 提示成功
     } else {
-      console.log('按讚失敗')
+      console.log('系統錯誤')
     }
   } catch (e) {
     console.log(e)
+    showToast('系統錯誤')
   } finally {
     hideLoading()
   }
@@ -97,7 +98,7 @@ async function likePost(articleId: String) {
           </div>
           <!-- <div class="md:self-end">您已追蹤 90 天！</div> -->
           <div class="flex items-center gap-8 self-end md:self-auto">
-            <div class="text-center cursor-pointer" @click="likePost(item._id)">
+            <div class="cursor-pointer text-center" @click="likePost(item._id)">
               <Icon name="material-symbols:thumb-up-outline" size="24" class="text-primary"></Icon>
               <div class="">取消</div>
             </div>
