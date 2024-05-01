@@ -12,10 +12,10 @@ export const APIStore = defineStore({
   state: () => {
     return {
       // 開發
-      api: 'http://localhost:3666/',
+      // api: 'http://localhost:3666/',
 
       // 線上
-      // api: "https://express-community.onrender.com/",
+      api: "https://express-community.onrender.com/",
 
       //   userInfo: null as JsonObject | null,
       //   tokenInfo: {
@@ -151,10 +151,10 @@ export const APIStore = defineStore({
       }
     },
     // 追蹤
-    async apiFollowUser() {
+    async apiFollowUser(data: JsonObject) {
       const user = await this.userInfo.token
       console.log(`token = ${user}`)
-      return await axios.patch(`${this.api}users/follow/${data.userId}`, {
+      return await axios.patch(`${this.api}users/follow/${data}`, {}, {
         headers: {
           token: user
         }

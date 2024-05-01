@@ -74,7 +74,7 @@ async function loadPostData() {
 
   // console.log(`currentSort = ${currentSort}`)
   // console.log(route.params);
-  
+
 
   let data = {
     sort: currentSort,
@@ -182,9 +182,8 @@ async function likePost(articleId: String) {
 
 // 追蹤
 async function followUser() {
-  let data: any = {
-    userId: route.params.id
-  }
+  let data = route.params.id
+
 
   try {
     showLoading()
@@ -207,7 +206,6 @@ async function followUser() {
     hideLoading()
   }
 }
-
 </script>
 
 <template>
@@ -239,8 +237,13 @@ async function followUser() {
             <div class="font-semibold">{{ userData.name }}</div>
             <div class="">{{ userData.followers?.length || 0 }} 人追蹤</div>
           </div>
-          <div class="mr-4 flex w-full max-w-[96px] items-center" v-if="userData._id !== store.userInfo.id">
-            <button class="custom-btn-secondary max-h-[36px] w-full" @click="followUser()">追蹤</button>
+          <div
+            class="mr-4 flex w-full max-w-[96px] items-center"
+            v-if="userData._id !== store.userInfo.id"
+          >
+            <button class="custom-btn-secondary max-h-[36px] w-full" @click="followUser()">
+              追蹤
+            </button>
           </div>
         </div>
       </div>
