@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { APIStore } from '~/store/apiService'
+const store = APIStore()
+import defaultAvatar from '~/assets/images/userPic.png'
+</script>
+
 <template>
   <div class="hidden px-6 py-8 min-w-[310px] bg-white border-2 border-black lg:flex lg:flex-col gap-6">
     <nuxtLink to="/addArticle" class="btn-add">
@@ -5,9 +11,9 @@
     </nuxtLink>
     <nuxtLink to="/myWall" class="bar-item">
       <div class="w-12 h-12 border-2 border-black rounded-full overflow-hidden">
-        <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto">
+        <img :src="store.userInfo?.avatar || defaultAvatar" alt="avatar" class="pic-auto">
       </div>
-      邊緣小杰
+      {{ store.userInfo?.name || 'Member' }}
     </nuxtLink>
     <nuxtLink to="/trackingList" class="bar-item">
       <div class="icon-default">

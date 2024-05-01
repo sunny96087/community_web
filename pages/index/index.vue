@@ -188,7 +188,7 @@ async function likePost(articleId: String) {
             <img :src="item.userId?.avatar || defaultAvatar" alt="pic" class="pic-auto" />
           </div>
           <div class="flex grow flex-col">
-            <div class="font-bold">{{ item.userId?.name }}</div>
+            <NuxtLink v-if="item.userId"  :to="`/otherWall/${item.userId._id}`" class="font-bold">{{ item.userId?.name }}</NuxtLink>
             <div class="text-[12px] text-gray-400">{{ item.createdAt }}</div>
           </div>
         </div>

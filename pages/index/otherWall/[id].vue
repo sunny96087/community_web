@@ -3,6 +3,7 @@ import type { apiResponse } from '~/models'
 import { APIStore } from '~/store/apiService'
 const store = APIStore()
 import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
+const router = useRouter()
 
 const currentPostType = ref(0)
 const postTypeOption = ['最新貼文', '熱門貼文', '最舊貼文']
@@ -45,8 +46,8 @@ async function loadUserData() {
 
   try {
     showLoading()
-    console.log(`data = ${JSON.stringify(data)}`);
-    
+    console.log(`data = ${JSON.stringify(data)}`)
+
     const res = (await store.apiGetSpecifyOpenUser(data)) as apiResponse
     const result = res.data
     console.log(`editEvent result = ${JSON.stringify(result)}`)
@@ -72,11 +73,13 @@ async function loadPostData() {
   }
 
   // console.log(`currentSort = ${currentSort}`)
+  // console.log(route.params);
+  
 
   let data = {
     sort: currentSort,
     keyword: currentKeyword.value,
-    userId: route.params
+    userId: route.params.id
   }
   console.log(data)
 
@@ -176,10 +179,46 @@ async function likePost(articleId: String) {
     hideLoading()
   }
 }
+
+// 追蹤
+async function followUser() {
+  let data: any = {
+    userId: route.params.id
+  }
+
+  try {
+    showLoading()
+    const res = await store.apiFollowUser(data)
+    const result = res.data
+    console.log(`editEvent result = ${JSON.stringify(result)}`)
+    if (result.status === 'success') {
+      console.log(result.message)
+
+      showToast(result.message)
+      loadUserData()
+
+      // 提示成功
+    } else {
+      console.log('失敗')
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoading()
+  }
+}
+
 </script>
 
 <template>
   <div class="">
+    <button
+      class="back mb-3 flex transform items-center gap-2 border-b border-black px-2 py-1 font-semibold duration-200"
+      @click="router.back()"
+    >
+      <Icon name="material-symbols:arrow-back-rounded" size="20"></Icon> 返回
+    </button>
+
     <div class="relative mb-4">
       <div class="flex min-h-[100px] rounded-lg border-2 border-black bg-white text-center"></div>
 
@@ -197,11 +236,11 @@ async function likePost(articleId: String) {
         </div>
         <div class="flex grow flex-col sm:flex-row">
           <div class="flex grow flex-col items-start">
-            <div class="">{{ userData.name }}</div>
-            <div class="">{{ userData.following?.length || 0 }} 人追蹤</div>
+            <div class="font-semibold">{{ userData.name }}</div>
+            <div class="">{{ userData.followers?.length || 0 }} 人追蹤</div>
           </div>
-          <div class="mr-4 flex w-full max-w-[96px] items-center">
-            <button class="custom-btn-secondary max-h-[36px] w-full">追蹤</button>
+          <div class="mr-4 flex w-full max-w-[96px] items-center" v-if="userData._id !== store.userInfo.id">
+            <button class="custom-btn-secondary max-h-[36px] w-full" @click="followUser()">追蹤</button>
           </div>
         </div>
       </div>
@@ -344,3 +383,10 @@ async function likePost(articleId: String) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.back:hover {
+  color: #03438d;
+  border-color: #03438d;
+}
+</style>

@@ -49,13 +49,17 @@ export const APIStore = defineStore({
     // 取得單筆使用者資料 公開
     async apiGetSpecifyOpenUser(data: JsonObject) {
       try {
-        console.log(data);
-        
+        console.log(data)
+
         return await axios.get(`${this.api}users/userOneOpen/${data.id}`)
       } catch (e) {
         console.log(`apiGetSpecifyUser error`, e)
         return e
       }
+    },
+    // 取得使用者按讚文章資料
+    async apiGetUserLikePost(data: JsonObject) {
+      return await axios.get(`${this.api}users/likedPosts/${data}`)
     },
     // 新增單筆文章
     async apiAddPost(data: JsonObject) {
@@ -119,6 +123,20 @@ export const APIStore = defineStore({
         console.log(`apiAddPostComment error`, e)
         return e
       }
+    },
+    // 追蹤
+    async apiFollowUser(data: JsonObject) {
+      const user = await this.userInfo.token
+      console.log(`token = ${user}`)
+      return await axios.patch(
+        `${this.api}users/follow/${data.userId}`,
+        {},
+        {
+          headers: {
+            token: user
+          }
+        }
+      )
     },
     // 註冊
     async apiRegister(data: JsonObject) {

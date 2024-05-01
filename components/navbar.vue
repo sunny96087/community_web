@@ -39,7 +39,7 @@ onMounted(() => {
           <img :src="store.userInfo?.avatar || defaultAvatar" alt="avatar" class="pic-auto" />
         </div>
 
-        <div class="border-b-2 border-black font-bold leading-[28px]">Member</div>
+        <div class="border-b-2 border-black font-bold leading-[28px]">{{ store.userInfo?.name || 'Member' }}</div>
       </div>
 
       <nuxt-link v-else to="/login" class="text-primary font-bold leading-[28px]">登入</nuxt-link>
