@@ -135,7 +135,7 @@ async function register() {
 </script>
 
 <template>
-  <div class="login flex min-h-screen w-full items-center justify-center">
+  <div class="login flex min-h-screen w-full items-center justify-center pb-[60px] sm:pb-[20px]">
     <div
       class="custom-border-2 mx-5 flex w-full max-w-[880px] flex-col gap-5 px-[48px] py-[70px] md:grid md:grid-cols-2 md:gap-12"
       style="box-shadow: -8px 8px 0px #00040029; background: #efece7"
@@ -208,6 +208,7 @@ async function register() {
         <NuxtLink to="/login" class="mt-4 block">我有帳號，前往登入</NuxtLink>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 

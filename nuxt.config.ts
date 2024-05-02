@@ -6,8 +6,18 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     'nuxt-icon',
     '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt'
+    '@pinia-plugin-persistedstate/nuxt',
+    '@nuxtjs/sitemap'
   ],
+  sitemap: {
+    // 您的網站根 URL
+    hostname: 'https://community-web-4l2.pages.dev',
+    // 您希望在 sitemap 中包含的路徑
+    routes: [
+      '/',
+      '/login',
+    ]
+  },
 
   imports: {
     dirs: [
