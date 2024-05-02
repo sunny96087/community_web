@@ -15,7 +15,8 @@ const currentKeyword = ref('')
 
 // 從路由取得使用者 id 參數
 const route = useRoute()
-// const currentUser = route.params
+const currentUser = route.params
+console.log(`currentUser = ${JSON.stringify(currentUser)}`)
 
 const dropdownVisible = ref(false)
 
@@ -23,13 +24,29 @@ const dropdownVisible = ref(false)
 const postList: any = ref([])
 import defaultAvatar from '~/assets/images/userPic.png'
 
-const userData: any = ref([])
+const otherUserData: any = ref([])
 
 // 創建一個响應式屬性來存儲留言內容
 const commentContent = ref('')
 
-loadPostData()
-loadUserData()
+// 取得使用者按讚文章列表
+const likePostList: any = ref([])
+const userData: any = ref([])
+
+// 取得使用者追蹤列表
+const followList: any = ref([])
+
+onMounted(() => {
+  loadOtherUserData()
+  getUserData()
+  loadPostData()
+})
+
+// 使用 watch 來監聽 currentPostType 的變化
+watch(currentPostType, () => {
+  getUserData()
+  loadPostData()
+})
 
 const toggleDropdown = () => {
   dropdownVisible.value = !dropdownVisible.value
@@ -41,7 +58,7 @@ const selectOption = (index: number) => {
   console.log(`currentPostType.value = ${currentPostType.value}`)
 }
 
-async function loadUserData() {
+async function loadOtherUserData() {
   let data = route.params
 
   try {
@@ -52,8 +69,8 @@ async function loadUserData() {
     const result = res.data
     console.log(`editEvent result = ${JSON.stringify(result)}`)
     if (result.status === 'success') {
-      userData.value = result.data
-      console.log(`userData = ${JSON.stringify(userData.value)}`)
+      otherUserData.value = result.data
+      console.log(`userData = ${JSON.stringify(otherUserData.value)}`)
     } else {
       console.log('取得使用者資料失敗')
     }
@@ -74,7 +91,6 @@ async function loadPostData() {
 
   // console.log(`currentSort = ${currentSort}`)
   // console.log(route.params);
-
 
   let data = {
     sort: currentSort,
@@ -111,10 +127,31 @@ async function loadPostData() {
   }
 }
 
-// 使用 watch 來監聽 currentPostType 的變化
-watch(currentPostType, () => {
-  loadPostData()
-})
+async function getUserData() {
+  try {
+    showLoading()
+    const res = await store.apiGetSpecifyUser()
+    const result = res.data
+    // console.log(`editEvent result = ${JSON.stringify(result)}`)
+    if (result.statusCode === 200) {
+      userData.value = result.data
+      likePostList.value = result.data.likedPosts
+      followList.value = result.data.following
+      console.log(`followList = ${JSON.stringify(followList.value)}`)
+    } else {
+      console.log('取得使用者資料失敗')
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoading()
+  }
+}
+
+// 檢查文章是否已被點讚
+function isPostLiked(postId: string): boolean {
+  return likePostList.value.includes(postId)
+}
 
 // 留言
 const submitComment = async (articleId: String) => {
@@ -167,6 +204,7 @@ async function likePost(articleId: String) {
       console.log(result.message)
 
       showToast(result.message)
+      getUserData()
       loadPostData()
 
       // 提示成功
@@ -182,8 +220,7 @@ async function likePost(articleId: String) {
 
 // 追蹤
 async function followUser() {
-  let data = route.params.id
-
+  let data: any = route.params.id
 
   try {
     showLoading()
@@ -194,7 +231,8 @@ async function followUser() {
       console.log(result.message)
 
       showToast(result.message)
-      loadUserData()
+      getUserData()
+      loadOtherUserData()
 
       // 提示成功
     } else {
@@ -205,6 +243,11 @@ async function followUser() {
   } finally {
     hideLoading()
   }
+}
+
+// 檢查使用者是否已追蹤
+function isFollowed(currentUser: { id: string }): boolean {
+  return followList.value.some((item) => item.userId === currentUser.id)
 }
 </script>
 
@@ -230,19 +273,23 @@ async function followUser() {
         class="absolute inset-0 flex items-center gap-4 overflow-hidden rounded-lg border-2 border-black bg-white text-center"
       >
         <div class="h-[100px] w-[100px] border-r-2 border-black">
-          <img :src="userData.avatar || defaultAvatar" alt="userData_avatar" class="pic-auto" />
+          <img
+            :src="otherUserData.avatar || defaultAvatar"
+            alt="otherUserData_avatar"
+            class="pic-auto"
+          />
         </div>
         <div class="flex grow flex-col sm:flex-row">
           <div class="flex grow flex-col items-start">
-            <div class="font-semibold">{{ userData.name }}</div>
-            <div class="">{{ userData.followers?.length || 0 }} 人追蹤</div>
+            <div class="font-semibold">{{ otherUserData.name }}</div>
+            <div class="">{{ otherUserData.followers?.length || 0 }} 人追蹤</div>
           </div>
           <div
             class="mr-4 flex w-full max-w-[96px] items-center"
-            v-if="userData._id !== store.userInfo.id"
+            v-if="otherUserData._id !== store.userInfo.id"
           >
             <button class="custom-btn-secondary max-h-[36px] w-full" @click="followUser()">
-              追蹤
+              {{ isFollowed(currentUser) ? '已追蹤' : '追蹤' }}
             </button>
           </div>
         </div>
@@ -310,8 +357,16 @@ async function followUser() {
         <div class="mt-5">
           <div class="flex items-center gap-2" v-if="item.likes > 0">
             <Icon
+              v-if="isPostLiked(item._id)"
               @click="likePost(item._id)"
-              name="material-symbols:thumb-up-outline"
+              name="material-symbols:thumb-up-rounded"
+              size="24"
+              class="text-primary"
+            ></Icon>
+            <Icon
+              v-else
+              @click="likePost(item._id)"
+              name="material-symbols:thumb-up-outline-rounded"
               size="24"
               class="text-primary"
             ></Icon>
@@ -320,7 +375,7 @@ async function followUser() {
           <div v-else class="flex items-center gap-2 text-gray-400">
             <Icon
               @click="likePost(item._id)"
-              name="material-symbols:thumb-up-outline"
+              name="material-symbols:thumb-up-outline-rounded"
               size="24"
               class=""
             ></Icon>

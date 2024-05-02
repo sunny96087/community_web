@@ -51,12 +51,30 @@ async function updateUser() {
     if (result.statusCode === 200) {
       console.log('更新使用者資料成功')
 
-      // 頁面刷新
-      // location.reload()
+      showToast('更新資料成功')
+
+      // 更新 localStorage 中的資料
+      // 使用 getUserInfoFromLocalStorage 方法取得當前的使用者資料
+      const currentUserData = store.getUserInfoFromLocalStorage()
+
+      if (currentUserData) {
+        // 更新 name 和 avatar 的值
+        currentUserData.name = userData.value.name
+        currentUserData.avatar = userData.value.avatar
+
+        // 將更新後的資料儲存回 localStorage
+        store.saveUserDataToLocalStorage(currentUserData)
+      } else {
+        // 如果 localStorage 中沒有使用者資料，則處理錯誤或設置預設值
+        console.log('沒有找到使用者資料')
+      }
+
+      // 頁面刷新 重新取得 localStorage 中的資料
+      location.reload()
     } else {
       console.log('更新使用者資料失敗')
     }
-  } catch (e) {
+  } catch (e: any) {
     console.log(e.response.data.message)
     showToast(e.response.data.message)
   } finally {

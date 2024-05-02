@@ -114,6 +114,15 @@ async function likePost(articleId: String) {
         </div>
       </div>
     </div>
+
+    <!-- like post list none -->
+    <div class="flex flex-col gap-4" v-else>
+      <div
+        class="custom-border-2 custom-b-shadow list-item-block flex justify-center gap-4 rounded-lg bg-white p-4 text-gray-400"
+      >
+        目前沒有按讚文章！
+      </div>
+    </div>
   </div>
 </template>
 

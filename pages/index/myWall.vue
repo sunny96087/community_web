@@ -4,8 +4,6 @@ import { APIStore } from '~/store/apiService'
 const store = APIStore()
 import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
 
-
-
 const currentPostType = ref(0)
 const postTypeOption = ['最新貼文', '熱門貼文', '最舊貼文']
 const currentKeyword = ref('')
@@ -20,7 +18,20 @@ import defaultAvatar from '~/assets/images/userPic.png'
 // 創建一個响應式屬性來存儲留言內容
 const commentContent = ref('')
 
-loadPostData()
+// 取得使用者按讚文章列表
+const likePostList: any = ref([])
+const userData: any = ref([])
+
+onMounted(() => {
+  getUserData()
+  loadPostData()
+})
+
+// 使用 watch 來監聽 currentPostType 的變化
+watch(currentPostType, () => {
+  getUserData()
+  loadPostData()
+})
 
 const toggleDropdown = () => {
   dropdownVisible.value = !dropdownVisible.value
@@ -45,7 +56,7 @@ async function loadPostData() {
   let data = {
     sort: currentSort,
     keyword: currentKeyword.value,
-    userId: store.userInfo.id,
+    userId: store.userInfo.id
   }
   console.log(data)
 
@@ -77,10 +88,30 @@ async function loadPostData() {
   }
 }
 
-// 使用 watch 來監聽 currentPostType 的變化
-watch(currentPostType, () => {
-  loadPostData()
-})
+async function getUserData() {
+  try {
+    showLoading()
+    const res = await store.apiGetSpecifyUser()
+    const result = res.data
+    // console.log(`editEvent result = ${JSON.stringify(result)}`)
+    if (result.statusCode === 200) {
+      userData.value = result.data
+      likePostList.value = result.data.likedPosts
+      console.log(`likePostList = ${JSON.stringify(likePostList.value)}`)
+    } else {
+      console.log('取得使用者資料失敗')
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoading()
+  }
+}
+
+// 檢查文章是否已被點讚
+function isPostLiked(postId: string): boolean {
+  return likePostList.value.includes(postId)
+}
 
 // 留言
 const submitComment = async (articleId: String) => {
@@ -133,6 +164,7 @@ async function likePost(articleId: String) {
       console.log(result.message)
 
       showToast(result.message)
+      getUserData()
       loadPostData()
 
       // 提示成功
@@ -210,8 +242,16 @@ async function likePost(articleId: String) {
         <div class="mt-5">
           <div class="flex items-center gap-2" v-if="item.likes > 0">
             <Icon
+              v-if="isPostLiked(item._id)"
               @click="likePost(item._id)"
-              name="material-symbols:thumb-up-outline"
+              name="material-symbols:thumb-up-rounded"
+              size="24"
+              class="text-primary"
+            ></Icon>
+            <Icon
+              v-else
+              @click="likePost(item._id)"
+              name="material-symbols:thumb-up-outline-rounded"
               size="24"
               class="text-primary"
             ></Icon>
@@ -220,7 +260,7 @@ async function likePost(articleId: String) {
           <div v-else class="flex items-center gap-2 text-gray-400">
             <Icon
               @click="likePost(item._id)"
-              name="material-symbols:thumb-up-outline"
+              name="material-symbols:thumb-up-outline-rounded"
               size="24"
               class=""
             ></Icon>

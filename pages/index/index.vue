@@ -15,6 +15,10 @@ const dropdownVisible = ref(false)
 const postList: any = ref([])
 import defaultAvatar from '~/assets/images/userPic.png'
 
+// 取得使用者按讚文章列表
+const likePostList: any = ref([])
+const userData: any = ref([])
+
 // 創建一個响應式屬性來存儲留言內容
 const commentContent = ref('')
 
@@ -27,6 +31,15 @@ const selectOption = (index: number) => {
   dropdownVisible.value = false
   console.log(`currentPostType.value = ${currentPostType.value}`)
 }
+
+onMounted(() => {
+  getUserData()
+  loadData()
+})
+// 使用 watch 來監聽 currentPostType 的變化
+watch(currentPostType, () => {
+  loadData()
+})
 
 async function loadData() {
   let currentSort = 'newest'
@@ -72,12 +85,30 @@ async function loadData() {
   }
 }
 
-// 使用 watch 來監聽 currentPostType 的變化
-watch(currentPostType, () => {
-  loadData()
-})
+async function getUserData() {
+  try {
+    showLoading()
+    const res = await store.apiGetSpecifyUser()
+    const result = res.data
+    // console.log(`editEvent result = ${JSON.stringify(result)}`)
+    if (result.statusCode === 200) {
+      userData.value = result.data
+      likePostList.value = result.data.likedPosts
+      console.log(`likePostList = ${JSON.stringify(likePostList.value)}`)
+    } else {
+      console.log('取得使用者資料失敗')
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoading()
+  }
+}
 
-loadData()
+// 檢查文章是否已被點讚
+function isPostLiked(postId: string): boolean {
+  return likePostList.value.includes(postId)
+}
 
 // 留言
 const submitComment = async (articleId: String) => {
@@ -85,10 +116,10 @@ const submitComment = async (articleId: String) => {
   // 例如，將留言內容和文章 ID 一起發送到伺服器
   console.log(`提交留言：${commentContent.value}，文章 ID：${articleId}`)
 
-  let data = {
+  let data: any = {
     content: commentContent.value,
     postId: articleId,
-    userId: store.userInfo.id,
+    userId: store.userInfo.id
   }
 
   try {
@@ -130,6 +161,7 @@ async function likePost(articleId: String) {
       console.log(result.message)
 
       showToast(result.message)
+      getUserData()
       loadData()
 
       // 提示成功
@@ -188,7 +220,9 @@ async function likePost(articleId: String) {
             <img :src="item.userId?.avatar || defaultAvatar" alt="pic" class="pic-auto" />
           </div>
           <div class="flex grow flex-col">
-            <NuxtLink v-if="item.userId"  :to="`/otherWall/${item.userId._id}`" class="font-bold">{{ item.userId?.name }}</NuxtLink>
+            <NuxtLink v-if="item.userId" :to="`/otherWall/${item.userId._id}`" class="font-bold">{{
+              item.userId?.name
+            }}</NuxtLink>
             <div class="text-[12px] text-gray-400">{{ item.createdAt }}</div>
           </div>
         </div>
@@ -208,17 +242,26 @@ async function likePost(articleId: String) {
         <div class="mt-5" v-if="store.isLoggedIn">
           <div class="flex items-center gap-2" v-if="item.likes > 0">
             <Icon
+              v-if="isPostLiked(item._id)"
               @click="likePost(item._id)"
-              name="material-symbols:thumb-up-outline"
+              name="material-symbols:thumb-up-rounded"
               size="24"
               class="text-primary"
             ></Icon>
+            <Icon
+              v-else
+              @click="likePost(item._id)"
+              name="material-symbols:thumb-up-outline-rounded"
+              size="24"
+              class="text-primary"
+            ></Icon>
+
             {{ item.likes }}
           </div>
           <div v-else class="flex items-center gap-2 text-gray-400">
             <Icon
               @click="likePost(item._id)"
-              name="material-symbols:thumb-up-outline"
+              name="material-symbols:thumb-up-outline-rounded"
               size="24"
               class=""
             ></Icon>
@@ -228,11 +271,7 @@ async function likePost(articleId: String) {
 
         <div class="mt-5" v-else>
           <div class="flex items-center gap-2" v-if="item.likes > 0">
-            <Icon
-              name="material-symbols:thumb-up-outline"
-              size="24"
-              class="text-primary"
-            ></Icon>
+            <Icon name="material-symbols:thumb-up-outline" size="24" class="text-primary"></Icon>
             {{ item.likes }}
           </div>
         </div>
@@ -301,3 +340,10 @@ async function likePost(articleId: String) {
     </div>
   </div>
 </template>
+<style scoped>
+.liked {
+  /* 點讚後的樣式 */
+  background-color: #007bff;
+  color: white;
+}
+</style>
