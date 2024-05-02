@@ -323,7 +323,7 @@ function isFollowed(currentUser: { id: string }): boolean {
 
       <!-- 關鍵字查詢 -->
       <div class="custom-search-input grow">
-        <input type="text" placeholder="搜尋貼文" v-model="currentKeyword" />
+        <input type="text" placeholder="搜尋貼文" v-model="currentKeyword" @keyup.enter="loadPostData" />
         <button @click="loadPostData">
           <Icon name="material-symbols:search" size="28"></Icon>
         </button>
@@ -394,7 +394,7 @@ function isFollowed(currentUser: { id: string }): boolean {
           </div>
 
           <div class="custom-search-input h-[40px] grow">
-            <input type="text" placeholder="留言..." v-model="commentContent" />
+            <input type="text" placeholder="留言..." v-model="commentContent" @keyup.enter="submitComment(item._id)" />
             <button class="w-[128px]" @click="submitComment(item._id)">留言</button>
           </div>
         </div>

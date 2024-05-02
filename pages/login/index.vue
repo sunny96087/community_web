@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: false
+  layout: false,
+  middleware: 'redirect-if-logged-in'
 })
 
 import type { apiResponse } from '~/models'
@@ -147,6 +148,7 @@ async function googleLogin() {
           type="Password"
           class="custom-input mt-4"
           placeholder="Password"
+          @keyup.enter="login"
         />
 
         <!-- <div class="mt-4 text-red-500">帳號或密碼錯誤，請重新輸入！</div> -->

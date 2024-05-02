@@ -73,8 +73,8 @@ async function updateUser() {
         console.log('沒有找到使用者資料')
       }
 
-      // 頁面刷新 重新取得 localStorage 中的資料
-      location.reload()
+      // 頁面刷新 重新取得 localStorage 中的資料 -> 母湯 會把 store 洗掉
+      // location.reload()
     } else {
       console.log('更新使用者資料失敗')
     }
