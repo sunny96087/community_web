@@ -56,8 +56,6 @@ async function login() {
   }
 }
 
-
-
 /** 
 //  * Google 登入 第一版
 async function googleLogin() {
@@ -161,7 +159,11 @@ async function googleLogin() {
         </button>
         <button v-else class="custom-btn-disabled mt-8 w-full rounded-lg">登入</button>
 
-        <NuxtLink to="/login/register" class="mt-4 block">我沒有帳號，前往註冊</NuxtLink>
+        <div class="flex flex-col lg:flex-row justify-center items-center gap-4 mt-4">
+          <NuxtLink to="/login/register" class="custom-link transform duration-200">我沒有帳號，前往註冊</NuxtLink>
+          <span class="hidden lg:block text-gray-400">|</span>
+          <NuxtLink to="/" class="custom-link transform duration-200">回首頁繼續當訪客</NuxtLink>
+        </div>
 
         <!-- <hr class="mt-4 border-black" /> -->
         <!-- google 登入 -->
@@ -184,5 +186,9 @@ async function googleLogin() {
   background-size: cover;
   background-attachment: fixed;
   font-family: 'Azeret Mono';
+}
+
+.custom-link:hover {
+  color: #03438d;
 }
 </style>

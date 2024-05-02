@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+definePageMeta({
+ middleware: 'auth'
+})
+
 import type { apiResponse } from '~/models'
 import { APIStore } from '~/store/apiService'
 const store = APIStore()
@@ -247,7 +252,7 @@ async function followUser() {
 
 // 檢查使用者是否已追蹤
 function isFollowed(currentUser: { id: string }): boolean {
-  return followList.value.some((item) => item.userId === currentUser.id)
+  return followList.value.some((item: { userId: string; }) => item.userId === currentUser.id)
 }
 </script>
 

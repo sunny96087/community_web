@@ -15,7 +15,7 @@ export const APIStore = defineStore({
       // api: 'http://localhost:3666/',
 
       // 線上
-      api: "https://express-community.onrender.com/",
+      api: 'https://express-community.onrender.com/',
 
       //   userInfo: null as JsonObject | null,
       //   tokenInfo: {
@@ -154,11 +154,15 @@ export const APIStore = defineStore({
     async apiFollowUser(data: JsonObject) {
       const user = await this.userInfo.token
       console.log(`token = ${user}`)
-      return await axios.patch(`${this.api}users/follow/${data}`, {}, {
-        headers: {
-          token: user
+      return await axios.patch(
+        `${this.api}users/follow/${data}`,
+        {},
+        {
+          headers: {
+            token: user
+          }
         }
-      })
+      )
     },
     // 註冊
     async apiRegister(data: JsonObject) {
@@ -209,6 +213,9 @@ export const APIStore = defineStore({
       localStorage.setItem('userInfo', userInfo)
       // this.userInfo = userInfo;
       // this.isLoggedIn = userInfo !== null;
+      // 更新 store 的狀態
+      this.userInfo = JSON.parse(userInfo) // 將字符串解析回對象
+      this.isLoggedIn = true // 設置登入狀態為 true
     },
     // 取使用者 token
     getToken() {

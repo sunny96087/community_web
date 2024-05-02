@@ -5,7 +5,7 @@ definePageMeta({
 import { APIStore } from '~/store/apiService'
 const store = APIStore()
 import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
-const router = useRouter();
+const router = useRouter()
 
 // 資料
 const name = ref('')
@@ -65,7 +65,7 @@ const checkEmail = async () => {
 
   if (email.value && email.value !== '') {
     // 驗證格式是否為信箱格式
-    const emailRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]+@[a-zA-Z0-9]+(?:\.[a-zA-Z]+)+$/;
+    const emailRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]+@[a-zA-Z0-9]+(?:\.[a-zA-Z]+)+$/
     if (emailRegex.test(email.value)) {
       console.log('email 格式正確')
     } else {
@@ -97,7 +97,12 @@ const checkConfirmPassword = () => {
 
 // 註冊
 async function register() {
-  if ( name.value !== '' && email.value !== '' && password.value !== '' && confirmPassword.value !== '') {
+  if (
+    name.value !== '' &&
+    email.value !== '' &&
+    password.value !== '' &&
+    confirmPassword.value !== ''
+  ) {
     let data = {
       name: name.value,
       email: email.value,
@@ -115,8 +120,10 @@ async function register() {
           token: result.user.token,
           id: result.user.id,
           name: result.user.name,
-          googleId: result.user.googleId
+          googleId: result.user.googleId,
+          avatar: result.user.avatar
         })
+
         router.push('/')
         showToast('註冊成功')
       } else {
@@ -205,7 +212,12 @@ async function register() {
           註冊
         </button>
         <button v-else class="custom-btn-disabled mt-8 w-full rounded-lg">註冊</button>
-        <NuxtLink to="/login" class="mt-4 block">我有帳號，前往登入</NuxtLink>
+
+        <div class="flex flex-col lg:flex-row justify-center items-center gap-4 mt-4">
+          <NuxtLink to="/login" class="custom-link transform duration-200">我有帳號，前往登入</NuxtLink>
+          <span class="hidden lg:block text-gray-400">|</span>
+          <NuxtLink to="/" class="custom-link transform duration-200">回首頁繼續當訪客</NuxtLink>
+        </div>
       </div>
     </div>
     <Footer />
@@ -218,5 +230,9 @@ async function register() {
   background-size: cover;
   background-attachment: fixed;
   font-family: 'Azeret Mono';
+}
+
+.custom-link:hover {
+  color: #03438d;
 }
 </style>

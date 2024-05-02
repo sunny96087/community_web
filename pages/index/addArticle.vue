@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: 'auth'
+})
+
 import type { apiResponse } from '~/models'
 import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
 import { APIStore } from '~/store/apiService'
@@ -129,20 +133,22 @@ async function handleFileUpload(event: any) {
 
       <label class="mt-4 block"
         >圖片連結
-        <div class="flex flex-col sm:flex-row gap-2">
-        <input
-          v-model="imageLink"
-          type="text"
-          class="custom-input"
-          placeholder="圖片連結"
-          disabled
-          style="background: #eee;"
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <input
+            v-model="imageLink"
+            type="text"
+            class="custom-input"
+            placeholder="圖片連結"
+            disabled
+            style="background: #eee"
           />
 
           <!-- 圖片上傳輸入框 -->
           <input type="file" @change="handleFileUpload" ref="fileInput" style="display: none" />
           <!-- 上傳圖片按鈕 -->
-          <button @click="triggerFileUpload" class="custom-btn-secondary min-w-[120px] w-[120px]">上傳圖片</button>
+          <button @click="triggerFileUpload" class="custom-btn-secondary w-[120px] min-w-[120px]">
+            上傳圖片
+          </button>
         </div>
       </label>
 

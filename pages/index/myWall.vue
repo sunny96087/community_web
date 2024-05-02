@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: 'auth'
+})
+
 import type { apiResponse } from '~/models'
 import { APIStore } from '~/store/apiService'
 const store = APIStore()

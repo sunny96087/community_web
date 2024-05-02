@@ -1,5 +1,8 @@
 <script setup lang="ts">
-// apiGetUserFollowList
+definePageMeta({
+  middleware: 'auth'
+})
+
 import defaultAvatar from '~/assets/images/userPic.png'
 import { APIStore } from '~/store/apiService'
 const store = APIStore()
@@ -69,7 +72,10 @@ const calculateFollowingDays = (createdAt: string) => {
         </div>
         <div class="flex grow flex-col md:flex-row">
           <div class="flex grow flex-col">
-            <NuxtLink :to="`/otherWall/${item.userId.id}`" class="list-item-name transform font-bold duration-200">
+            <NuxtLink
+              :to="`/otherWall/${item.userId.id}`"
+              class="list-item-name transform font-bold duration-200"
+            >
               {{ item.userId.name }}
             </NuxtLink>
             <div class="text-gray-400">追蹤時間：{{ item.createdAt }}</div>
@@ -78,7 +84,6 @@ const calculateFollowingDays = (createdAt: string) => {
           <div class="md:self-end">您已追蹤 {{ calculateFollowingDays(item.createdAt) }} 天！</div>
         </div>
       </div>
-
     </div>
 
     <!-- tracking list none -->

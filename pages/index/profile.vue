@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: 'auth'
+})
+
 import type { apiResponse } from '~/models'
 import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
 import { APIStore } from '~/store/apiService'
