@@ -173,6 +173,10 @@ export const APIStore = defineStore({
         return e
       }
     },
+    // 註冊 => email 驗證
+    async apiVerifyEmail(data: JsonObject) {
+      return await axios.post(`${this.api}users/signup-with-email-verification`, data)
+    },
     // 驗證 email 是否重複
     async apiCheckEmail(data: JsonObject) {
       try {

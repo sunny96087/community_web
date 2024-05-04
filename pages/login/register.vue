@@ -97,7 +97,50 @@ const checkConfirmPassword = () => {
   }
 }
 
+// 註冊 + 電子信箱驗證
+async function registerVerifyEmail() {
+  if (
+    name.value !== '' &&
+    email.value !== '' &&
+    password.value !== '' &&
+    confirmPassword.value !== ''
+  ) {
+    let data = {
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      confirmPassword: confirmPassword.value
+    }
+
+    try {
+      showLoading()
+      const res = await store.apiVerifyEmail(data)
+      const result = res.data
+      console.log(`register result = ${JSON.stringify(result)}`)
+      if (result.statusCode === 200) {
+        showToast(result.message)
+
+        // 重置欄位
+        name.value = ''
+        email.value = ''
+        password.value = ''
+        confirmPassword.value = ''
+      } else {
+        showToast('註冊失敗')
+      }
+    } catch (e) {
+      console.log(e)
+      showToast('註冊失敗')
+    } finally {
+      hideLoading()
+    }
+  } else {
+    showToast('請填寫必填欄位！')
+  }
+}
+
 // 註冊
+/* 
 async function register() {
   if (
     name.value !== '' &&
@@ -141,6 +184,7 @@ async function register() {
     showToast('請填寫必填欄位！')
   }
 }
+*/
 </script>
 
 <template>
@@ -209,15 +253,17 @@ async function register() {
             confirmPassword !== ''
           "
           class="custom-btn-primary mt-8 w-full rounded-lg"
-          @click="register"
+          @click="registerVerifyEmail()"
         >
           註冊
         </button>
         <button v-else class="custom-btn-disabled mt-8 w-full rounded-lg">註冊</button>
 
-        <div class="flex flex-col lg:flex-row justify-center items-center gap-4 mt-4">
-          <NuxtLink to="/login" class="custom-link transform duration-200">我有帳號，前往登入</NuxtLink>
-          <span class="hidden lg:block text-gray-400">|</span>
+        <div class="mt-4 flex flex-col items-center justify-center gap-4 lg:flex-row">
+          <NuxtLink to="/login" class="custom-link transform duration-200"
+            >我有帳號，前往登入</NuxtLink
+          >
+          <span class="hidden text-gray-400 lg:block">|</span>
           <NuxtLink to="/" class="custom-link transform duration-200">回首頁繼續當訪客</NuxtLink>
         </div>
       </div>
