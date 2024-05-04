@@ -91,7 +91,7 @@ async function likePost(articleId: String) {
         class="custom-border-2 custom-b-shadow list-item-block flex gap-4 rounded-lg bg-white p-4"
       >
         <div class="custom-avatar-clear h-[40px] w-[40px] min-w-[40px]">
-          <img src="~/assets/images/userPic.jpg" alt="avatar" class="pic-auto" />
+          <img :src="item.userId?.avatar || defaultAvatar" alt="avatar" class="pic-auto" />
         </div>
         <div class="flex grow flex-col md:flex-row">
           <div class="flex grow flex-col">
