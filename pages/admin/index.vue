@@ -10,7 +10,7 @@ definePageMeta({
     <admin-navbar />
     <div class="page-wrapper">
       <div class="grow">
-        <NuxtPage />
+        <NuxtPage class="custom-b-shadow mt-4 rounded-lg border-2 border-black bg-white"/>
       </div>
     </div>
   </main>
@@ -35,4 +35,5 @@ main {
   padding-bottom: 60px;
   align-items: start;
 }
+
 </style>

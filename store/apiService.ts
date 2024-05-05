@@ -12,10 +12,10 @@ export const APIStore = defineStore({
   state: () => {
     return {
       // 開發
-      // api: 'http://localhost:3666/',
+      api: 'http://localhost:3666/',
 
       // 線上
-      api: 'https://express-community.onrender.com/',
+      // api: 'https://express-community.onrender.com/',
 
       //   userInfo: null as JsonObject | null,
       //   tokenInfo: {
@@ -26,6 +26,8 @@ export const APIStore = defineStore({
     }
   },
   actions: {
+    // todo 文章 posts
+
     // 取得所有文章
     async apiGetPost(data: JsonObject) {
       try {
@@ -37,6 +39,42 @@ export const APIStore = defineStore({
         return e
       }
     },
+    // 新增單筆文章
+    async apiAddPost(data: JsonObject) {
+      try {
+        const user = await this.userInfo.token
+        console.log(`token = ${user}`)
+        return await axios.post(`${this.api}posts`, data, {
+          headers: {
+            token: user
+          }
+        })
+      } catch (e) {
+        console.log(`apiAddPost error`, e)
+        return e
+      }
+    },
+    // 新增單筆文章留言
+    async apiAddPostComment(data: JsonObject) {
+      try {
+        return await axios.post(`${this.api}posts/comments/${data.postId}`, data)
+      } catch (e) {
+        console.log(`apiAddPostComment error`, e)
+        return e
+      }
+    },
+    // 指定文章按讚
+    async apiLikePost(data: JsonObject) {
+      try {
+        return await axios.patch(`${this.api}posts/like/${data.postId}`, data)
+      } catch (e) {
+        console.log(`apiAddPostComment error`, e)
+        return e
+      }
+    },
+
+    // todo 使用者 users
+
     // 取得單筆使用者資料 自己
     async apiGetSpecifyUser() {
       const user = await this.getToken()
@@ -71,11 +109,6 @@ export const APIStore = defineStore({
           token: user
         }
       })
-      // try {
-      // } catch (e) {
-      //   console.log(`apiUpdateUser error`, e)
-      //   return e
-      // }
     },
     // 重設密碼
     async apiUpdatePassword(data: JsonObject) {
@@ -87,21 +120,7 @@ export const APIStore = defineStore({
         }
       })
     },
-    // 新增單筆文章
-    async apiAddPost(data: JsonObject) {
-      try {
-        const user = await this.userInfo.token
-        console.log(`token = ${user}`)
-        return await axios.post(`${this.api}posts`, data, {
-          headers: {
-            token: user
-          }
-        })
-      } catch (e) {
-        console.log(`apiAddPost error`, e)
-        return e
-      }
-    },
+
     // 取得使用者蹤清單 自己
     async apiGetUserFollowList() {
       try {
@@ -114,39 +133,6 @@ export const APIStore = defineStore({
         })
       } catch (e) {
         console.log(`apiGetUserFollowList error`, e)
-        return e
-      }
-    },
-    // 上傳單張圖片
-    async apiUploadImage(data: JsonObject) {
-      // const user = await this.userInfo.token
-      // console.log(`token = ${user}`)
-      return await axios.post(`${this.api}upload/image`, data, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      // try {
-      // } catch (e) {
-      //   console.log(`apiAddPost error`, e)
-      //   return e
-      // }
-    },
-    // 新增單筆文章留言
-    async apiAddPostComment(data: JsonObject) {
-      try {
-        return await axios.post(`${this.api}posts/comments/${data.postId}`, data)
-      } catch (e) {
-        console.log(`apiAddPostComment error`, e)
-        return e
-      }
-    },
-    // 指定文章按讚
-    async apiLikePost(data: JsonObject) {
-      try {
-        return await axios.patch(`${this.api}posts/like/${data.postId}`, data)
-      } catch (e) {
-        console.log(`apiAddPostComment error`, e)
         return e
       }
     },
@@ -189,18 +175,46 @@ export const APIStore = defineStore({
     // 登入
     async apiLogin(data: JsonObject) {
       return await axios.post(`${this.api}users/sign_in`, data)
-      // try {
-      // } catch (e) {
-      //   console.log(`login error`, e)
-      //   return e
-      // }
     },
     // google 登入 || 註冊
     async apiGoogleLogin() {
       return await axios.get(`${this.api}users/google`)
     },
 
-    // 存使用者登入資料
+    // todo 圖片 upload
+
+    // 上傳單張圖片
+    async apiUploadImage(data: JsonObject) {
+      // const user = await this.userInfo.token
+      // console.log(`token = ${user}`)
+      return await axios.post(`${this.api}upload/image`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      // try {
+      // } catch (e) {
+      //   console.log(`apiAddPost error`, e)
+      //   return e
+      // }
+    },
+
+    // todo 公告 announcements
+
+    // 取得單筆使用者資料 自己
+    async apiGetAdminAnnouncements(data: JsonObject) {
+      const user = await this.getToken()
+      console.log(`token = ${user}`)
+      return await axios.get(`${this.api}announcements/admin?status=${data.status}&tag=${data.tag}&keyword=${data.keyword}&startDate=${data.startDate}&endDate=${data.endDate}`, {
+        headers: {
+          token: user
+        }
+      })
+    },
+
+    // todo 本地端資料處理 localStorage
+
+    // 使用者登入資料存 localStorage
     saveUserDataToLocalStorage(data: {
       token: string
       id: string
@@ -222,7 +236,12 @@ export const APIStore = defineStore({
       this.userInfo = JSON.parse(userInfo) // 將字符串解析回對象
       this.isLoggedIn = true // 設置登入狀態為 true
     },
-    // 取使用者 token
+    // 設置使用者 localStorage 資料
+    setUserInfo(userInfo: any | null) {
+      this.userInfo = userInfo
+      this.isLoggedIn = userInfo !== null
+    },
+    // 取使用者 localStorage token
     getToken() {
       // 從 localStorage 中取得 userInfo 字符串
       const userInfoString = localStorage.getItem('userInfo')
@@ -232,6 +251,7 @@ export const APIStore = defineStore({
       const token = userInfo ? userInfo.token : null
       return token
     },
+    // 取使用者 localStorage 資料
     getUserInfoFromLocalStorage() {
       // 從 localStorage 取出 userInfo 字符串
       const userInfoString = localStorage.getItem('userInfo')
@@ -239,17 +259,12 @@ export const APIStore = defineStore({
       const userInfo = userInfoString ? JSON.parse(userInfoString) : null
       return userInfo
     },
-
     // 登出方法，移除 localStorage 中的資訊
     logout() {
       // 直接移除名為 'userInfo' 的項目
       localStorage.removeItem('userInfo')
       this.userInfo = null
       this.isLoggedIn = false
-    },
-    setUserInfo(userInfo: any | null) {
-      this.userInfo = userInfo
-      this.isLoggedIn = userInfo !== null
     }
 
     /** 
