@@ -207,6 +207,7 @@ export const APIStore = defineStore({
       name: string
       googleId: string
       avatar: string
+      isAdmin?: boolean
     }) {
       // 將資料轉化為 JSON 字符串
       const userInfo = JSON.stringify(data)

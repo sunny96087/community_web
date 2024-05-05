@@ -33,11 +33,10 @@ onMounted(() => {
 <template>
   <div class="sticky top-0 z-20 border-b-[3px] border-black bg-white py-3">
     <div class="relative m-auto flex max-w-[1200px] items-center justify-between px-6">
-      <nuxtLink to="/" class="paytone-one-regular text-[26px]">Chat!</nuxtLink>
+      <nuxtLink to="/" class="paytone-one-regular text-[26px]">Chat! Admin</nuxtLink>
 
-      <div class="flex gap-4 justify-center items-center">
-        <nuxtLink v-if="store.userInfo?.isAdmin" to="/admin/" class="border-b-2 border-black font-bold leading-[28px]">後台管理</nuxtLink>
-
+      <div class="flex items-center justify-center gap-4">
+        <nuxtLink to="/" class="border-b-2 border-black font-bold leading-[28px]">回前台</nuxtLink>
 
         <!-- member -->
         <div v-if="store.isLoggedIn" @click="menu = !menu" class="flex cursor-pointer gap-[10px]">
@@ -46,27 +45,17 @@ onMounted(() => {
           </div>
 
           <div class="border-b-2 border-black font-bold leading-[28px]">
-            {{ store.userInfo?.name || 'Member' }}
+            {{ store.userInfo?.name || 'Admin' }}
           </div>
         </div>
-
-        <nuxt-link v-else to="/login" class="text-primary font-bold leading-[28px]">登入</nuxt-link>
         <!-- member menu -->
         <div
           v-if="menu"
           class="double-bg absolute right-4 top-[124%] inline-flex flex-col border-2 border-black bg-white"
         >
-          <nuxtLink to="/myWall" class="menu-item border-b-2 border-black">我的貼文牆</nuxtLink>
-          <nuxtLink to="/profile" class="menu-item border-b-2 border-black">個人資料</nuxtLink>
-          <nuxtLink to="/addArticle" class="menu-item border-b-2 border-black lg:hidden"
-            >張貼動態</nuxtLink
-          >
-          <nuxtLink to="/trackingList" class="menu-item border-b-2 border-black lg:hidden"
-            >追蹤名單</nuxtLink
-          >
-          <nuxtLink to="/likeArticleList" class="menu-item border-b-2 border-black lg:hidden"
-            >按讚文章</nuxtLink
-          >
+          <nuxtLink to="/admin/" class="menu-item border-b-2 border-black">公告</nuxtLink>
+          <nuxtLink to="/admin/test" class="menu-item border-b-2 border-black">測試</nuxtLink>
+          <nuxtLink to="/" class="menu-item border-b-2 border-black">回前台</nuxtLink>
           <nuxtLink @click="logout" class="menu-item">登出 </nuxtLink>
         </div>
       </div>
@@ -79,12 +68,17 @@ onMounted(() => {
   @apply transform px-[52px] py-2 duration-300;
 }
 
+.link-active {
+  color: #03438d;
+  border-color: #03438d;
+}
+
 .menu-item:hover {
   background: #efece7;
 }
 
 .double-bg::after {
-  @apply absolute left-[2px] top-[2px] h-[254px] w-[188px] border-2 border-black bg-white lg:h-[128px];
+  @apply absolute left-[2px] top-[2px] h-[170px] w-[156px] border-2 border-black bg-white;
   content: '';
   z-index: -1;
 }

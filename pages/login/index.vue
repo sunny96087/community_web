@@ -38,7 +38,8 @@ async function login() {
         id: result.user.id,
         name: result.user.name,
         googleId: result.user.googleId,
-        avatar: result.user.avatar
+        avatar: result.user.avatar,
+        isAdmin: result.user.isAdmin
       })
 
       router.push('/')
@@ -139,9 +140,9 @@ async function googleLogin() {
       </div>
       <div class="text-center">
         <div class="paytone-one-regular text-primary text-[48px] font-bold md:text-[60px]">
-          MetaWall
+          Chat!
         </div>
-        <div class="text-[20px] font-bold md:text-[24px]">到元宇宙展開全新社交圈</div>
+        <div class="text-[20px] font-bold md:text-[24px]">到雀特展開全新社交圈</div>
         <input v-model="email" type="text" class="custom-input mt-9" placeholder="Email" />
         <input
           v-model="password"

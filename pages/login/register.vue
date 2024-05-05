@@ -198,7 +198,7 @@ async function register() {
       </div>
       <div class="text-center">
         <div class="paytone-one-regular text-primary text-[48px] font-bold md:text-[60px]">
-          MetaWall
+          Chat!
         </div>
         <div class="text-[20px] font-bold md:text-[24px]">註冊</div>
         <input
