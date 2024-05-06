@@ -67,7 +67,7 @@ const checkEmail = async () => {
 
   if (email.value && email.value !== '') {
     // 驗證格式是否為信箱格式
-    const emailRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]+@[a-zA-Z0-9]+(?:\.[a-zA-Z]+)+$/
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (emailRegex.test(email.value)) {
       console.log('email 格式正確')
     } else {
