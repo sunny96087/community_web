@@ -10,7 +10,8 @@ definePageMeta({
     <admin-navbar />
     <div class="page-wrapper">
       <div class="grow">
-        <NuxtPage class="custom-b-shadow mt-4 rounded-lg border-2 border-black bg-white"/>
+        <!-- <NuxtPage class="custom-b-shadow mt-4 rounded-lg border-2 border-black bg-white"/> -->
+        <NuxtPage />
       </div>
     </div>
   </main>

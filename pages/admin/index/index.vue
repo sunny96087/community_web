@@ -8,16 +8,38 @@ import { APIStore } from '~/store/apiService'
 const store = APIStore()
 import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
 
-const list = ref([])
+interface User {
+  _id: string
+  name: string
+  avatar: string
+}
+
+interface Announcement {
+  _id?: string
+  title: string
+  content: string
+  status: number
+  user?: User
+  tag: string
+  views?: number
+  createdAt?: string
+  updatedAt?: string
+  time?: string // 這個字段可能不存在，所以標記為可選
+}
+
+type AnnouncementList = Announcement[]
+
+// 公告列表
+const list: Ref<AnnouncementList> = ref([])
 
 onMounted(() => {
   loadData()
 })
 
-// query
-const currentStatus = ref(1)
-const currentTag = ref('')
+// NOTE keyword 關鍵字
 const currentKeyword = ref('')
+
+// NOTE date 日期
 
 // 獲取當前日期
 const now = new Date()
@@ -39,6 +61,132 @@ const formatDate = (date: Date) => {
 const currentStartDate = ref(formatDate(startDate))
 const currentEndDate = ref(formatDate(endDate))
 
+// NOTE tag 標籤
+const currentTag = ref('') // 標籤
+const tagOption = ['全部', '公告', '功能', '其他']
+
+const dropdownVisible = ref(false)
+const toggleDropdown = () => {
+  dropdownVisible.value = !dropdownVisible.value
+}
+
+// 選擇標籤的方法
+const selectTagOption = (tag: string) => {
+  // 如果選擇的是 '全部'，則將 currentTag 的值設置為 ''
+  if (tag === '全部') {
+    currentTag.value = ''
+  } else {
+    currentTag.value = tag
+  }
+  dropdownVisible.value = false
+  console.log(`currentTag.value = ${currentTag.value}`)
+}
+
+// NOTE status 狀態
+const currentStatus = ref('') // 狀態
+const statusDropdowns = ref(false)
+const toggleStatusDropdowns = () => {
+  statusDropdowns.value = !statusDropdowns.value
+}
+
+// 定義狀態選項
+const statusOptions = [
+  { label: '全部', value: '' },
+  { label: '未發佈', value: '0' },
+  { label: '已發布', value: '1' }
+]
+
+// 選擇狀態的方法
+const selectStatus = (status: string) => {
+  currentStatus.value = status
+  statusDropdowns.value = false
+  console.log(`currentStatus.value = ${currentStatus.value}`)
+}
+
+// 計算屬性來獲取 當前選中狀態的 label
+const currentStatusLabel = computed(() => {
+  const option = statusOptions.find((option) => option.value === currentStatus.value)
+  return option ? option.label : ''
+})
+
+// 定義當前模式和當前公告
+const currentMode = ref('') // '' 表示沒有選擇任何模式
+const currentAnnouncement: Ref<Announcement | null> = ref(null) // 用於存儲當前要編輯或查看的公告
+const modal = ref(false) // 用於控制 modal 的顯示與隱藏
+
+// 新增公告的方法
+const addAnnouncement = () => {
+  currentMode.value = 'add'
+  currentAnnouncement.value = { title: '', content: '', status: 0, tag: '', views: 0 } // 創建一個空的公告對象
+  modal.value = true
+}
+
+// 送出新增公告
+async function saveAdd() {
+  // 檢查 currentAnnouncement.value 是否為 null
+  if (!currentAnnouncement.value) {
+    console.error('currentAnnouncement is null')
+    return // 如果為 null，則不進行後續操作
+  }
+
+  let data = {
+    title: currentAnnouncement.value.title,
+    content: currentAnnouncement.value.content,
+    status: Number(currentAnnouncement.value.status),
+    tag: currentAnnouncement.value.tag
+  }
+  console.log(`data = ${JSON.stringify(data)}`)
+
+
+  modal.value = false
+  reset()
+}
+
+// 編輯公告的方法
+const editAnnouncement = (announcement: Announcement) => {
+  currentMode.value = 'edit'
+  currentAnnouncement.value = announcement
+  modal.value = true
+}
+
+// 送出新增公告
+async function saveEdit() {
+  // 檢查 currentAnnouncement.value 是否為 null
+  if (!currentAnnouncement.value) {
+    console.error('currentAnnouncement is null')
+    return // 如果為 null，則不進行後續操作
+  }
+
+  let data = {
+    title: currentAnnouncement.value.title,
+    content: currentAnnouncement.value.content,
+    status: Number(currentAnnouncement.value.status),
+    tag: currentAnnouncement.value.tag
+  }
+  console.log(`data = ${JSON.stringify(data)}`)
+
+
+  modal.value = false
+  reset()
+}
+
+// 檢視公告的方法
+const viewAnnouncement = (announcement: Announcement) => {
+  currentMode.value = 'view'
+  currentAnnouncement.value = announcement
+  modal.value = true
+}
+
+function reset () {
+  currentAnnouncement.value = null
+}
+
+function cancel () {
+  modal.value = false
+  reset()
+}
+
+// NOTE api
 async function loadData() {
   let data = {
     status: currentStatus.value,
@@ -70,10 +218,172 @@ async function loadData() {
 <template>
   <main class="index">
     <!-- 篩選列 status tag keyword startDate endDate -->
+    <div class="flex flex-col lg:flex-row lg:gap-3">
+      <!-- 日期選擇 -->
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <input type="date" class="custom-input w-full" v-model="currentStartDate" />
+        <input type="date" class="custom-input" v-model="currentEndDate" />
+      </div>
+
+      <div class="mt-3 flex grow flex-col gap-3 sm:flex-row lg:mt-0">
+        <div class="flex gap-3">
+          <!-- 標籤選擇 -->
+          <div class="relative w-full min-w-[128px]">
+            <div class="custom-select" @click="toggleDropdown">
+              {{ currentTag ? currentTag : '全部' }}
+              <Icon name="material-symbols:keyboard-arrow-down" size="26"></Icon>
+            </div>
+            <div class="custom-select-options" v-if="dropdownVisible">
+              <div
+                class="option"
+                :class="{ 'option-selected': option === currentTag }"
+                v-for="(option, index) in tagOption"
+                :key="option"
+                @click="selectTagOption(option)"
+              >
+                {{ option }}
+              </div>
+            </div>
+          </div>
+
+          <!-- 狀態選擇 -->
+          <div class="relative w-full min-w-[128px]">
+            <div class="custom-select" @click="toggleStatusDropdowns">
+              {{ currentStatusLabel }}
+              <Icon name="material-symbols:keyboard-arrow-down" size="26"></Icon>
+            </div>
+            <div class="custom-select-options" v-if="statusDropdowns">
+              <div
+                class="option"
+                :class="{ 'option-selected': option.value === currentStatus }"
+                v-for="(option, index) in statusOptions"
+                :key="index"
+                @click="selectStatus(option.value)"
+              >
+                {{ option.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 關鍵字查詢 -->
+        <div class="custom-search-input grow">
+          <input
+            type="text"
+            placeholder="搜尋貼文"
+            v-model="currentKeyword"
+            @keyup.enter="loadData"
+          />
+          <button @click="loadData">
+            <Icon name="material-symbols:search" size="28"></Icon>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- 公告列表 檢視 新增 -->
-    
+    <div class="mt-3 flex justify-end">
+      <button @click="addAnnouncement" class="custom-btn-primary w-[120px] rounded-lg">新增</button>
+    </div>
+
+    <div
+      v-if="list && list.length > 0"
+      class="custom-b-shadow mt-4 flex flex-col gap-4 rounded-lg border-2 border-black bg-white p-3"
+    >
+      <div v-for="item in list" :key="item._id" class="border-b border-black pb-2">
+        <div class="flex justify-between gap-3">
+          <div class="text-primary">{{ item.tag }}</div>
+          <div class="text-[14px] text-gray-400">{{ item.status === 1 ? '發布中' : '草稿' }}</div>
+        </div>
+        <div class="text-[20px]">{{ item.title }}</div>
+        <div class="text-[14px] text-gray-400">{{ item.updatedAt }}</div>
+        <!-- <div class="">{{ item.content }}</div> -->
+
+        <div class="flex justify-end">
+          <button @click="editAnnouncement(item)" class="mr-2">編輯</button>
+          <button @click="viewAnnouncement(item)">查看</button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="custom-b-shadow mt-4 flex flex-col gap-4 rounded-lg border-2 border-black bg-white p-5 text-center text-gray-400"
+    >
+      暫時沒有公告
+    </div>
+
     <!-- 公告彈窗 檢視 新增 -->
+
+    <div v-if="modal" class="modal fixed inset-0 z-30 bg-black bg-opacity-20 px-6 py-16">
+      <div class="custom-b-shadow w-full rounded-lg border-2 border-black bg-white p-5">
+        <div class="flex">
+          <div class="grow"></div>
+          <Icon
+            name="material-symbols:close-rounded"
+            size="40"
+            class="cursor-pointer"
+            @click="cancel"
+          ></Icon>
+        </div>
+        <div v-if="currentAnnouncement" class="flex flex-col gap-3">
+          <label
+            >標題
+            <input class="custom-input text-xl font-bold" v-model="currentAnnouncement.title" />
+          </label>
+
+          <label
+            >content
+            <textarea
+              class="custom-input min-h-[140px] text-xl font-bold"
+              v-model="currentAnnouncement.content"
+            ></textarea>
+          </label>
+
+          <div class="flex flex-col gap-2 sm:flex-row sm:gap-5">
+            <label>狀態</label>
+            <div class="flex flex-wrap gap-5">
+              <div class="flex gap-2">
+                <input type="radio" id="draft" value="0" v-model="currentStatus" />
+                <label for="draft">草稿</label>
+              </div>
+              <div class="flex gap-2">
+                <input type="radio" id="published" value="1" v-model="currentStatus" />
+                <label for="published">發布</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2 sm:flex-row sm:gap-5">
+            <label>標籤</label>
+            <div class="flex flex-wrap gap-5">
+              <div class="flex gap-2">
+                <input type="radio" id="tag1" value="公告" v-model="currentTag" />
+                <label for="tag1">公告</label>
+              </div>
+              <div class="flex gap-2">
+                <input type="radio" id="tag2" value="功能" v-model="currentTag" />
+                <label for="tag2">功能</label>
+              </div>
+              <div class="flex gap-2">
+                <input type="radio" id="tag3" value="其他" v-model="currentTag" />
+                <label for="tag3">其他</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex justify-center">
+            <button v-if="currentMode === 'add'" @click="saveAdd()" class="custom-btn-primary w-full rounded-lg sm:w-[60%]">
+              新增
+            </button>
+
+            <button v-if="currentMode === 'edit'" @click="saveEdit()" class="custom-btn-primary w-full rounded-lg sm:w-[60%]">
+              儲存
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 

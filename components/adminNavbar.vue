@@ -36,7 +36,7 @@ onMounted(() => {
       <nuxtLink to="/" class="paytone-one-regular text-[26px]">Chat! Admin</nuxtLink>
 
       <div class="flex items-center justify-center gap-4">
-        <nuxtLink to="/" class="border-b-2 border-black font-bold leading-[28px]">回前台</nuxtLink>
+        <nuxtLink to="/" class="border-b-2 border-black font-bold leading-[28px] hidden sm:block">回前台</nuxtLink>
 
         <!-- member -->
         <div v-if="store.isLoggedIn" @click="menu = !menu" class="flex cursor-pointer gap-[10px]">

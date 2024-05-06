@@ -27,7 +27,7 @@ body {
 }
 
 .custom-select-options {
-  @apply absolute top-0 flex w-full flex-col bg-white shadow-sm;
+  @apply absolute top-0 flex w-full flex-col bg-white shadow-sm z-20;
   border: 2px solid #000;
 }
 
@@ -57,7 +57,7 @@ input:focus {
 }
 
 .custom-input {
-  @apply flex max-h-[52px] border-2 border-black bg-white w-full px-3 py-4;
+  @apply max-h-[52px] border-2 border-black bg-white w-full px-3 py-4;
 }
 
 .custom-search-input button {
