@@ -201,16 +201,65 @@ export const APIStore = defineStore({
 
     // todo 公告 announcements
 
-    // 取得單筆使用者資料 自己
+    // 後台 取得公告列表
     async apiGetAdminAnnouncements(data: JsonObject) {
       const user = await this.getToken()
       console.log(`token = ${user}`)
-      return await axios.get(`${this.api}announcements/admin?status=${data.status}&tag=${data.tag}&keyword=${data.keyword}&startDate=${data.startDate}&endDate=${data.endDate}`, {
+      return await axios.get(
+        `${this.api}announcements/admin?status=${data.status}&tag=${data.tag}&keyword=${data.keyword}&startDate=${data.startDate}&endDate=${data.endDate}`,
+        {
+          headers: {
+            token: user
+          }
+        }
+      )
+    },
+
+    // 後台 新增公告
+    async apiPostAnnouncement(data: JsonObject) {
+      const user = await this.getToken()
+      console.log(`token = ${user}`)
+      return await axios.post(`${this.api}announcements/`, data, {
         headers: {
           token: user
         }
       })
     },
+
+    // 後台 編輯公告
+    async apiUpdateAnnouncement(data: JsonObject) {
+      const user = await this.getToken()
+      console.log(`token = ${user}`)
+      return await axios.put(`${this.api}announcements/update/${data.id}`, data, {
+        headers: {
+          token: user
+        }
+      })
+    },
+
+    // 後台 刪除公告
+    async apiDeleteAnnouncement(data: JsonObject) {
+      const user = await this.getToken()
+      console.log(`token = ${user}`)
+      return await axios.delete(`${this.api}announcements/delete/${data.id}`, {
+        headers: {
+          token: user
+        }
+      })
+    },
+
+    // 前台 取得公告列表
+    async apiGetAnnouncements(data: JsonObject) {
+      return await axios.get(
+        `${this.api}announcements/admin?sort=${data.sort}&tag=${data.tag}&keyword=${data.keyword}`
+      )
+    },
+
+    // 前台 紀錄公告觀看次數
+    async apiViewAnnouncement(data: JsonObject) {
+      return await axios.put(`${this.api}announcements/views/${data.id}`)
+    },
+
 
     // todo 本地端資料處理 localStorage
 

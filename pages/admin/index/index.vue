@@ -4,6 +4,7 @@ definePageMeta({
 })
 
 import type { apiResponse } from '~/models'
+import Id from '~/pages/index/otherWall/[id].vue'
 import { APIStore } from '~/store/apiService'
 const store = APIStore()
 import { showToast, openDialog, showLoading, hideLoading } from '~/store/eventBus'
@@ -137,9 +138,26 @@ async function saveAdd() {
   }
   console.log(`data = ${JSON.stringify(data)}`)
 
+  try {
+    showLoading()
 
-  modal.value = false
-  reset()
+    const res = await store.apiPostAnnouncement(data)
+    const result = res.data
+    console.log(`editEvent result = ${JSON.stringify(result)}`)
+    if (result.statusCode === 200) {
+      showToast('新增公告成功')
+      modal.value = false
+      reset()
+
+      loadData()
+    } else {
+      showToast('新增公告失敗')
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoading()
+  }
 }
 
 // 編輯公告的方法
@@ -149,7 +167,7 @@ const editAnnouncement = (announcement: Announcement) => {
   modal.value = true
 }
 
-// 送出新增公告
+// 儲存編輯公告
 async function saveEdit() {
   // 檢查 currentAnnouncement.value 是否為 null
   if (!currentAnnouncement.value) {
@@ -157,17 +175,35 @@ async function saveEdit() {
     return // 如果為 null，則不進行後續操作
   }
 
-  let data = {
+  let data: any = {
     title: currentAnnouncement.value.title,
     content: currentAnnouncement.value.content,
     status: Number(currentAnnouncement.value.status),
-    tag: currentAnnouncement.value.tag
+    tag: currentAnnouncement.value.tag,
+    id: currentAnnouncement.value._id
   }
   console.log(`data = ${JSON.stringify(data)}`)
 
+  try {
+    showLoading()
 
-  modal.value = false
-  reset()
+    const res = await store.apiUpdateAnnouncement(data)
+    const result = res.data
+    console.log(`editEvent result = ${JSON.stringify(result)}`)
+    if (result.statusCode === 200) {
+      showToast('編輯公告成功')
+      modal.value = false
+      reset()
+
+      loadData()
+    } else {
+      showToast('編輯公告失敗')
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoading()
+  }
 }
 
 // 檢視公告的方法
@@ -177,11 +213,11 @@ const viewAnnouncement = (announcement: Announcement) => {
   modal.value = true
 }
 
-function reset () {
+function reset() {
   currentAnnouncement.value = null
 }
 
-function cancel () {
+function cancel() {
   modal.value = false
   reset()
 }
@@ -206,6 +242,36 @@ async function loadData() {
       console.log(`list = ${JSON.stringify(list)}`)
     } else {
       console.log('取得公告列表失敗')
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoading()
+  }
+}
+
+async function deleteAnnouncement(announcement: Announcement) {
+  // 顯示確認彈窗
+  const isConfirmed = await openDialog('確認刪除', '您確定要刪除這個公告嗎？')
+
+  // 如果用戶確認了刪除操作
+  if (!isConfirmed) {
+    return
+  }
+  let data: any = {
+    id: announcement._id
+  }
+
+  try {
+    showLoading()
+    const res = await store.apiDeleteAnnouncement(data)
+    const result = res.data
+    console.log(`result = ${JSON.stringify(result)}`)
+    if (result.statusCode === 200) {
+      showToast('刪除公告成功')
+      loadData()
+    } else {
+      console.log('刪除公告失敗')
     }
   } catch (e) {
     console.log(e)
@@ -300,8 +366,9 @@ async function loadData() {
         <!-- <div class="">{{ item.content }}</div> -->
 
         <div class="flex justify-end">
-          <button @click="editAnnouncement(item)" class="mr-2">編輯</button>
+          <button @click="deleteAnnouncement(item)">刪除</button>
           <button @click="viewAnnouncement(item)">查看</button>
+          <button @click="editAnnouncement(item)" class="mr-2">編輯</button>
         </div>
       </div>
     </div>
@@ -316,7 +383,7 @@ async function loadData() {
     <!-- 公告彈窗 檢視 新增 -->
 
     <div v-if="modal" class="modal fixed inset-0 z-30 bg-black bg-opacity-20 px-6 py-16">
-      <div class="custom-b-shadow w-full rounded-lg border-2 border-black bg-white p-5">
+      <div class="custom-b-shadow w-full rounded-lg border-2 border-black bg-white p-5 max-w-[1200px] m-auto">
         <div class="flex">
           <div class="grow"></div>
           <Icon
@@ -329,7 +396,11 @@ async function loadData() {
         <div v-if="currentAnnouncement" class="flex flex-col gap-3">
           <label
             >標題
-            <input class="custom-input text-xl font-bold" v-model="currentAnnouncement.title" />
+            <input
+              class="custom-input text-xl font-bold"
+              v-model="currentAnnouncement.title"
+              :disabled="currentMode === 'view'"
+            />
           </label>
 
           <label
@@ -337,6 +408,7 @@ async function loadData() {
             <textarea
               class="custom-input min-h-[140px] text-xl font-bold"
               v-model="currentAnnouncement.content"
+              :disabled="currentMode === 'view'"
             ></textarea>
           </label>
 
@@ -344,11 +416,23 @@ async function loadData() {
             <label>狀態</label>
             <div class="flex flex-wrap gap-5">
               <div class="flex gap-2">
-                <input type="radio" id="draft" value="0" v-model="currentStatus" />
+                <input
+                  type="radio"
+                  id="draft"
+                  value="0"
+                  v-model="currentAnnouncement.status"
+                  :disabled="currentMode === 'view'"
+                />
                 <label for="draft">草稿</label>
               </div>
               <div class="flex gap-2">
-                <input type="radio" id="published" value="1" v-model="currentStatus" />
+                <input
+                  type="radio"
+                  id="published"
+                  value="1"
+                  v-model="currentAnnouncement.status"
+                  :disabled="currentMode === 'view'"
+                />
                 <label for="published">發布</label>
               </div>
             </div>
@@ -358,26 +442,61 @@ async function loadData() {
             <label>標籤</label>
             <div class="flex flex-wrap gap-5">
               <div class="flex gap-2">
-                <input type="radio" id="tag1" value="公告" v-model="currentTag" />
+                <input
+                  type="radio"
+                  id="tag1"
+                  value="公告"
+                  v-model="currentAnnouncement.tag"
+                  :disabled="currentMode === 'view'"
+                />
                 <label for="tag1">公告</label>
               </div>
               <div class="flex gap-2">
-                <input type="radio" id="tag2" value="功能" v-model="currentTag" />
+                <input
+                  type="radio"
+                  id="tag2"
+                  value="功能"
+                  v-model="currentAnnouncement.tag"
+                  :disabled="currentMode === 'view'"
+                />
                 <label for="tag2">功能</label>
               </div>
               <div class="flex gap-2">
-                <input type="radio" id="tag3" value="其他" v-model="currentTag" />
+                <input
+                  type="radio"
+                  id="tag3"
+                  value="其他"
+                  v-model="currentAnnouncement.tag"
+                  :disabled="currentMode === 'view'"
+                />
                 <label for="tag3">其他</label>
               </div>
             </div>
           </div>
 
-          <div class="mt-4 flex justify-center">
-            <button v-if="currentMode === 'add'" @click="saveAdd()" class="custom-btn-primary w-full rounded-lg sm:w-[60%]">
+          <div v-if="currentMode === 'add'" class="mt-4 flex justify-center">
+            <button
+              v-if="
+                !currentAnnouncement.title ||
+                !currentAnnouncement.content ||
+                !currentAnnouncement.tag
+              "
+              @click="saveAdd()"
+              class="custom-btn-disabled w-full rounded-lg sm:w-[60%]"
+            >
               新增
             </button>
+            <button
+              v-else
+              @click="saveAdd()"
+              class="custom-btn-primary w-full rounded-lg sm:w-[60%]"
+            >
+              新增
+            </button>
+          </div>
 
-            <button v-if="currentMode === 'edit'" @click="saveEdit()" class="custom-btn-primary w-full rounded-lg sm:w-[60%]">
+          <div v-if="currentMode === 'edit'" class="mt-4 flex justify-center">
+            <button @click="saveEdit()" class="custom-btn-primary w-full rounded-lg sm:w-[60%]">
               儲存
             </button>
           </div>
