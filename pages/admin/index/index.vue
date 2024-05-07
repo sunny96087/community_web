@@ -252,7 +252,7 @@ async function loadData() {
 
 async function deleteAnnouncement(announcement: Announcement) {
   // 顯示確認彈窗
-  const isConfirmed = await openDialog('確認刪除', '您確定要刪除這個公告嗎？')
+  const isConfirmed = await openDialog('注意', '您確定要刪除這個公告嗎？')
 
   // 如果用戶確認了刪除操作
   if (!isConfirmed) {
@@ -356,7 +356,7 @@ async function deleteAnnouncement(announcement: Announcement) {
       v-if="list && list.length > 0"
       class="custom-b-shadow mt-4 flex flex-col gap-4 rounded-lg border-2 border-black bg-white p-3"
     >
-      <div v-for="item in list" :key="item._id" class="border-b border-black pb-2">
+      <div v-for="item in list" :key="item._id" class="border-b border-gray-300 pb-3">
         <div class="flex justify-between gap-3">
           <div class="text-primary">{{ item.tag }}</div>
           <div class="text-[14px] text-gray-400">{{ item.status === 1 ? '發布中' : '草稿' }}</div>
@@ -365,10 +365,30 @@ async function deleteAnnouncement(announcement: Announcement) {
         <div class="text-[14px] text-gray-400">{{ item.updatedAt }}</div>
         <!-- <div class="">{{ item.content }}</div> -->
 
-        <div class="flex justify-end">
-          <button @click="deleteAnnouncement(item)">刪除</button>
-          <button @click="viewAnnouncement(item)">查看</button>
-          <button @click="editAnnouncement(item)" class="mr-2">編輯</button>
+        <div class="flex items-center justify-end gap-3">
+          <button @click="deleteAnnouncement(item)" class="custom-btn-icon border-red-500">
+            <Icon
+              name="material-symbols:delete-outline-rounded"
+              size="24"
+              class="transform text-red-500 duration-200 hover:opacity-80"
+            ></Icon>
+          </button>
+
+          <button @click="viewAnnouncement(item)" class="custom-btn-icon border-gray-700">
+            <Icon
+              name="material-symbols:visibility-outline-rounded"
+              size="24"
+              class="transform text-gray-700 duration-200 hover:opacity-80"
+            ></Icon>
+          </button>
+
+          <button @click="editAnnouncement(item)" class="custom-btn-icon mr-2 border-primary">
+            <Icon
+              name="material-symbols:edit-outline-rounded"
+              size="24"
+              class="text-primary transform duration-200 hover:opacity-80"
+            ></Icon>
+          </button>
         </div>
       </div>
     </div>
@@ -383,9 +403,13 @@ async function deleteAnnouncement(announcement: Announcement) {
     <!-- 公告彈窗 檢視 新增 -->
 
     <div v-if="modal" class="modal fixed inset-0 z-30 bg-black bg-opacity-20 px-6 py-16">
-      <div class="custom-b-shadow w-full rounded-lg border-2 border-black bg-white p-5 max-w-[1200px] m-auto">
-        <div class="flex">
-          <div class="grow"></div>
+      <div
+        class="custom-b-shadow m-auto w-full max-w-[1200px] rounded-lg border-2 border-black bg-white p-5"
+      >
+        <div class="mb-5 flex items-center">
+          <div class="grow text-[24px] font-medium">
+            {{ currentMode === 'add' ? '新增' : currentMode === 'edit' ? '編輯' : '檢視' }}公告
+          </div>
           <Icon
             name="material-symbols:close-rounded"
             size="40"
@@ -404,9 +428,9 @@ async function deleteAnnouncement(announcement: Announcement) {
           </label>
 
           <label
-            >content
+            >內文
             <textarea
-              class="custom-input min-h-[140px] text-xl font-bold"
+              class="custom-input min-h-[260px] text-xl font-bold"
               v-model="currentAnnouncement.content"
               :disabled="currentMode === 'view'"
             ></textarea>
@@ -415,7 +439,7 @@ async function deleteAnnouncement(announcement: Announcement) {
           <div class="flex flex-col gap-2 sm:flex-row sm:gap-5">
             <label>狀態</label>
             <div class="flex flex-wrap gap-5">
-              <div class="flex gap-2">
+              <div class="flex items-center gap-2">
                 <input
                   type="radio"
                   id="draft"
@@ -425,7 +449,7 @@ async function deleteAnnouncement(announcement: Announcement) {
                 />
                 <label for="draft">草稿</label>
               </div>
-              <div class="flex gap-2">
+              <div class="flex items-center gap-2">
                 <input
                   type="radio"
                   id="published"
@@ -441,7 +465,7 @@ async function deleteAnnouncement(announcement: Announcement) {
           <div class="flex flex-col gap-2 sm:flex-row sm:gap-5">
             <label>標籤</label>
             <div class="flex flex-wrap gap-5">
-              <div class="flex gap-2">
+              <div class="flex items-center gap-2">
                 <input
                   type="radio"
                   id="tag1"
@@ -451,7 +475,7 @@ async function deleteAnnouncement(announcement: Announcement) {
                 />
                 <label for="tag1">公告</label>
               </div>
-              <div class="flex gap-2">
+              <div class="flex items-center gap-2">
                 <input
                   type="radio"
                   id="tag2"
@@ -461,7 +485,7 @@ async function deleteAnnouncement(announcement: Announcement) {
                 />
                 <label for="tag2">功能</label>
               </div>
-              <div class="flex gap-2">
+              <div class="flex items-center gap-2">
                 <input
                   type="radio"
                   id="tag3"
@@ -506,4 +530,8 @@ async function deleteAnnouncement(announcement: Announcement) {
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.custom-btn-icon {
+  @apply border rounded-md px-2 py-1;
+}
+</style>
