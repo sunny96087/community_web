@@ -93,8 +93,8 @@ const toggleStatusDropdowns = () => {
 // 定義狀態選項
 const statusOptions = [
   { label: '全部', value: '' },
-  { label: '未發佈', value: '0' },
-  { label: '已發布', value: '1' }
+  { label: '草稿', value: '0' },
+  { label: '發布中', value: '1' }
 ]
 
 // 選擇狀態的方法
@@ -406,9 +406,9 @@ async function deleteAnnouncement(announcement: Announcement) {
 
     <!-- 公告彈窗 檢視 新增 -->
 
-    <div v-if="modal" class="modal fixed inset-0 z-30 bg-black bg-opacity-20 px-6 py-16">
+    <div v-if="modal" class="modal fixed inset-0 z-30 bg-black bg-opacity-20 sm:px-6 sm:py-16">
       <div
-        class="custom-b-shadow m-auto w-full max-w-[1200px] rounded-lg border-2 border-black bg-white p-5"
+        class="custom-b-shadow m-auto w-full max-w-[1200px] rounded-lg border-2 border-black bg-white p-5 max-h-full overflow-y-scroll"
       >
         <div class="mb-5 flex items-center">
           <div class="grow text-[24px] font-medium">
@@ -440,7 +440,7 @@ async function deleteAnnouncement(announcement: Announcement) {
             ></textarea>
           </label> -->
           <div>
-            <label>內文 </label>
+            <label>內文 <span v-if="currentMode === 'add' || currentMode === 'edit'" class="text-[14px] text-gray-400">目前不支援本地圖片上傳，僅支援圖片網址</span></label>
             <div
               class="custom-area"
               v-if="currentMode === 'view'"
