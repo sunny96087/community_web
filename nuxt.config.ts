@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -13,10 +14,7 @@ export default defineNuxtConfig({
     // 您的網站根 URL
     hostname: 'https://community-web-4l2.pages.dev',
     // 您希望在 sitemap 中包含的路徑
-    routes: [
-      '/',
-      '/login',
-    ]
+    routes: ['/', '/login']
   },
 
   imports: {
@@ -31,5 +29,7 @@ export default defineNuxtConfig({
     ]
   },
   css: ['~/assets/css/main.css'],
-
+  vite: {
+    plugins: [ckeditor5({ theme: require.resolve('@ckeditor/ckeditor5-theme-lark') })]
+  }
 })

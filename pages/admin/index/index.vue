@@ -164,6 +164,8 @@ async function saveAdd() {
 const editAnnouncement = (announcement: Announcement) => {
   currentMode.value = 'edit'
   currentAnnouncement.value = announcement
+  console.log(`currentAnnouncement.value = ${JSON.stringify(currentAnnouncement.value)}`)
+
   modal.value = true
 }
 
@@ -210,6 +212,7 @@ async function saveEdit() {
 const viewAnnouncement = (announcement: Announcement) => {
   currentMode.value = 'view'
   currentAnnouncement.value = announcement
+  console.log(`currentAnnouncement.value = ${JSON.stringify(currentAnnouncement.value)}`)
   modal.value = true
 }
 
@@ -279,6 +282,7 @@ async function deleteAnnouncement(announcement: Announcement) {
     hideLoading()
   }
 }
+
 </script>
 
 <template>
@@ -382,7 +386,7 @@ async function deleteAnnouncement(announcement: Announcement) {
             ></Icon>
           </button>
 
-          <button @click="editAnnouncement(item)" class="custom-btn-icon mr-2 border-primary">
+          <button @click="editAnnouncement(item)" class="custom-btn-icon border-primary mr-2">
             <Icon
               name="material-symbols:edit-outline-rounded"
               size="24"
@@ -427,14 +431,27 @@ async function deleteAnnouncement(announcement: Announcement) {
             />
           </label>
 
-          <label
+          <!-- <label
             >內文
             <textarea
               class="custom-input min-h-[260px] text-xl font-bold"
               v-model="currentAnnouncement.content"
               :disabled="currentMode === 'view'"
             ></textarea>
-          </label>
+          </label> -->
+          <div>
+            <label>內文 </label>
+            <div
+              class="custom-area"
+              v-if="currentMode === 'view'"
+              v-html="currentAnnouncement.content"
+            ></div>
+            <the-ckeditor
+              v-else
+              v-model="currentAnnouncement.content"
+              class="border-2 border-black"
+            ></the-ckeditor>
+          </div>
 
           <div class="flex flex-col gap-2 sm:flex-row sm:gap-5">
             <label>狀態</label>
@@ -505,7 +522,6 @@ async function deleteAnnouncement(announcement: Announcement) {
                 !currentAnnouncement.content ||
                 !currentAnnouncement.tag
               "
-              @click="saveAdd()"
               class="custom-btn-disabled w-full rounded-lg sm:w-[60%]"
             >
               新增
@@ -532,6 +548,6 @@ async function deleteAnnouncement(announcement: Announcement) {
 
 <style scoped>
 .custom-btn-icon {
-  @apply border rounded-md px-2 py-1;
+  @apply rounded-md border px-2 py-1;
 }
 </style>
